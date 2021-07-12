@@ -1,0 +1,5 @@
+ProcessConfig = pRangeToPosition
+{
+  AppTick   = 10
+  CommsTick = 10
+}

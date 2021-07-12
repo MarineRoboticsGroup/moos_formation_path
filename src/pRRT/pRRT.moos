@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pRRT config block
+
+ProcessConfig = pRRT
+{
+   AppTick   = 10
+   CommsTick = 10
+}
+

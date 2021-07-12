@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pRangeToPosition config block
+
+ProcessConfig = pRangeToPosition
+{
+   AppTick   = 10
+   CommsTick = 10
+}
+
