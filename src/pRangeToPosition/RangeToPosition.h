@@ -36,10 +36,24 @@ private: // State variables
   double m_leader_range;
   double m_other_follower_range;
 
-  double m_self_heading;
-  double m_leader_heading;
+  double m_self_x;
+  double m_self_y;
+  double m_leader_x;
+  double m_leader_y;
 
+  double self_leader_angle;
+
+  double prev_leader_range;
+  double prev_self_leader_angle;
+  double prev_self_x;
+  double prev_self_y;
+
+  double m_time;
+  double prev_time;
+
+  string m_gnd_node_report;
   string est_msg;
+  string est_node_report;
 };
 
 #endif

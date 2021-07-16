@@ -1,0 +1,15 @@
+//---------------------------------------
+ProcessConfig = pGenObstacle
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  name = a
+
+  min_x = 60
+  max_x = 75
+  min_y = -150
+  max_y = -170
+
+  steps = 10
+}

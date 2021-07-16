@@ -25,7 +25,7 @@ set MODE = PLANNING {
 //----------------------------------------------
 Behavior = BHV_Loiter
 {
-  name      = bhv_loiter
+  name      = loiter
   pwt       = 100
   condition = MODE==LOITERING
 
@@ -40,7 +40,7 @@ Behavior = BHV_Loiter
 //----------------------------------------------
 Behavior = BHV_Waypoint
 {
-  name      = bhv_waypoint
+  name      = return_to_start
   pwt       = 100
   condition = MODE==RETURNING
 
@@ -51,10 +51,26 @@ Behavior = BHV_Waypoint
 //----------------------------------------------
 Behavior = BHV_Waypoint
 {
-  name      = bhv_planning
+  name      = traj_waypoints
   pwt       = 100
   condition = MODE==PLANNING
 
      speed  = 2.5
      points = $(START_POS) //replace w/ updating list 
+}
+
+//----------------------------------------------
+Behavior=BHV_AvoidObstacle
+{
+  name       = avoid_obstacle
+  pwt        = 500
+  condition  = MODE==ACTIVE
+  templating = spawn
+  updates    = OBSTACLE_ALERT
+
+     allowable_ttc = 5 
+       buffer_dist = 5
+    pwt_outer_dist = 19
+    pwt_inner_dist = 10
+    completed_dist = 51
 }

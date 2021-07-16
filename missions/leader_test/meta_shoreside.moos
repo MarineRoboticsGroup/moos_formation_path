@@ -21,24 +21,27 @@ ProcessConfig = ANTLER
   Run = uFldShoreBroker @ NewConsole = false
   Run = uFldNodeComms   @ NewConsole = false
   Run = pLogger         @ NewConsole = false
+  Run = pGenObstacle    @ NewConsole = false
 }
 
 #include plug_origin_warp.moos
 #include plug_pShare.moos
 #include plug_pHostInfo.moos
 #include plug_pLogger.moos
+#include plug_pGenObstacle.moos
 
 //--------------------------------------------------
 // uFldShoreBroker Configuration Block
 
 ProcessConfig = uFldShoreBroker
 {
-  AppTick       = 1
-  CommsTick     = 1
+  AppTick       = 10
+  CommsTick     = 10
 
   qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
-  qbridge  = MOOS_MANUAL_OVERRIDE, APPCAST_REQ, CRS_RANGE_REPORT
-
+  qbridge  = MOOS_MANUAL_OVERRIDE, APPCAST_REQ
+  qbridge  = CRS_RANGE_REPORT
+  bridge  = src=GIVEN_OBSTACLE, alias=GIVEN_OBSTACLE
 
 }
 

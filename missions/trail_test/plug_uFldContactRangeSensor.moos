@@ -14,11 +14,11 @@ ProcessConfig = uFldContactRangeSensor
 
   // Configuring manner of reporting
   report_vars    = both
-  ground_truth   = false
+  ground_truth   = true
 
   // Configuring visual artifacts
-  ping_color     = white
-  echo_color    = chartreuse
+  // ping_color     = white
+  // echo_color    = chartreuse
 
   // Configuring Artificial Noise
   // rn_algorithm   = gaussian,sigma=10

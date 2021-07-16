@@ -1,0 +1,35 @@
+1. Followers
+    Baseline trail behavior X
+    Range sensing X
+    Bearing sensing X
+    Range/bearing to position X
+    Use est for trail behavior X
+        - Need to adjust how speed is handled X
+        - Add delay to prevent initial errors
+        - Figure out why trailpoint grows wildly at points (particularly around turns?)
+
+2. Environment
+    Obstacles visualization X
+    Obstacle sensing X
+    Three environments
+
+2. Leader
+    Traj to waypoints
+    Environment Integration
+        - Start / end regions
+        - Tune obstacle avoidance
+    Preplanning:
+        A*
+        RRT*
+
+3. Full System
+    Tuning:
+        bearing / range noise
+    Meta-agent tuning
+    Follower # scaling
+    Integration Test
+
+4. Extensions
+    Rigidity metric
+    Smart obstacle avoidance
+    Unknown environments

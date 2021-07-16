@@ -16,8 +16,9 @@ INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS})
 # List the subdirectories to build...
 #============================================================================
 ADD_SUBDIRECTORY(pRangeToPosition)
-ADD_SUBDIRECTORY(pRRT)
 ADD_SUBDIRECTORY(pRigidityMetric)
+ADD_SUBDIRECTORY(pTrajToWaypoints)
+ADD_SUBDIRECTORY(pGenObstacle)
 
 ##############################################################################
 #                           END of CMakeLists.txt

@@ -32,11 +32,12 @@ set MODE = TRAILING {
    // ---------------------------
    name         = range_timer
    condition    = MODE == ACTIVE
-   duration     = 10
+   duration     = 1
    endflag      = CRS_RANGE_REQUEST = "name=$(OVNAME)"
    updates      = TIMER_UPDATES
    perpetual    = true
  }
+
 
 // Return to start positions
 //----------------------------------------------
@@ -108,7 +109,7 @@ Behavior = BHV_Trail
   pwt        = 100
   condition  = MODE == TRAILING
 
-              contact = leader
+              contact = est_leader
        pwt_outer_dist = 130
             nm_radius = 18
                radius = 8
