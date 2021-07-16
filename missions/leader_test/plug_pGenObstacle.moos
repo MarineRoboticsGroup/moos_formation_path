@@ -4,12 +4,9 @@ ProcessConfig = pGenObstacle
   AppTick   = 1
   CommsTick = 1
 
-  name = a
+  // new_obstacle = name=a,min_x=60,max_x=75,min_y=-150,max_y=-170,steps=10
 
-  min_x = 60
-  max_x = 75
-  min_y = -150
-  max_y = -170
-
-  steps = 10
+  // Preset environments
+  // Valid values are: 1, 2, 3
+  env = 2
 }

@@ -29,17 +29,13 @@ class GenObstacle : public AppCastingMOOSApp
 
  protected:
    void registerVariables();
+   void setEnv();
 
  private: // Configuration variables
- string name;
- double min_x;
- double max_x;
- double min_y;
- double max_y;
- int steps;
+ int env;
 
  private: // State variables
- bool all_posted;
+ vector<string> m_new_obstacle;
 };
 
 #endif
