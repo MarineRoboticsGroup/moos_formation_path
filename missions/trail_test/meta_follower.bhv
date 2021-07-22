@@ -110,9 +110,31 @@ Behavior = BHV_Trail
   condition  = MODE == TRAILING
 
               contact = est_leader
-       pwt_outer_dist = 130
+       pwt_outer_dist = 200
             nm_radius = 18
-               radius = 8
+               radius = 5
+          trail_angle = $(ANGLE)
+          trail_range = $(RADIUS)
+
+     trail_angle_type = relative
+     on_no_contact_ok = true
+          extrapolate = true
+                decay = 30,60
+  bearing_line_config = white:0, green:0.65, yellow:0.8, red:1.0
+}
+
+// This is for comparison
+//----------------------------------------------
+Behavior = BHV_Trail
+{
+  name       = accurate_contact
+  pwt        = 1
+  condition  = MODE == TRAILING
+
+              contact = leader
+       pwt_outer_dist = 200
+            nm_radius = 18
+               radius = 5
           trail_angle = $(ANGLE)
           trail_range = $(RADIUS)
 

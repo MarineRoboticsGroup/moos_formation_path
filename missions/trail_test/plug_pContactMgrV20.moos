@@ -3,8 +3,8 @@
 
 ProcessConfig = pContactMgrV20
 {
-  AppTick   = 2
-  CommsTick = 2
+  AppTick   = 10
+  CommsTick = 10
 
   CONTACT_MAX_AGE = 3600
   display_radii = false

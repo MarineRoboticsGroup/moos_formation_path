@@ -19,6 +19,12 @@ GenObstacle::GenObstacle()
 {
   m_new_obstacle = {};
   env = 0;
+
+  // boundaries
+  int_min_x = 0;
+  int_max_x = 200;
+  int_min_y = -200;
+  int_max_y = 0;
 }
 
 //---------------------------------------------------------
@@ -177,12 +183,6 @@ void GenObstacle::setEnv()
   // Valid env #s
   vector<int> valid_env_ids = {1, 2, 3};
 
-  // boundaries
-  int int_min_x = 0;
-  int int_max_x = 200;
-  int int_min_y = -200;
-  int int_max_y = 0;
-
   // Convert boundaries to usable vals
   string inside_min_x = to_string(int_min_x);
   string inside_max_x = to_string(int_max_x);
@@ -194,7 +194,7 @@ void GenObstacle::setEnv()
   string outside_min_y = to_string(int_min_y - 1);
   string outside_max_y = to_string(int_max_y + 1);
 
-  // Boundaries
+  // Make boundaries
   if (count(valid_env_ids.begin(), valid_env_ids.end(), env))
   {
     m_new_obstacle.push_back("name=l_bound,min_x=" + outside_min_x + ",max_x=" + inside_min_x + ",min_y=" + inside_min_y + ",max_y=" + inside_max_y + ",steps=50");
@@ -205,42 +205,42 @@ void GenObstacle::setEnv()
 
   switch (env)
   {
-    case 1: // Plain env
-    {
-      break;
-    }
-    case 2: // Curve Maze
-    {
-      // Wall 1
-      string case_2_wall_1_min_x = to_string(int_min_x + 2.0 / 3.0 * (int_max_x - int_min_x) - .5);
-      string case_2_wall_1_max_x = to_string(int_min_x + 2.0 / 3.0 * (int_max_x - int_min_x) + .5);
-      string case_2_wall_1_min_y = to_string((int_min_y + int_max_y) / 2.0);
-      string case_2_wall_1_max_y = to_string(int_max_y);
+  case 1: // Plain env
+  {
+    break;
+  }
+  case 2: // Curve Maze
+  {
+    // Wall 1
+    string case_2_wall_1_min_x = to_string(int_min_x + 2.0 / 3.0 * (int_max_x - int_min_x) - .5);
+    string case_2_wall_1_max_x = to_string(int_min_x + 2.0 / 3.0 * (int_max_x - int_min_x) + .5);
+    string case_2_wall_1_min_y = to_string((int_min_y + int_max_y) / 2.0);
+    string case_2_wall_1_max_y = to_string(int_max_y);
 
-      m_new_obstacle.push_back("name=case_2_wall_1,min_x=" + case_2_wall_1_min_x + ",max_x=" + case_2_wall_1_max_x + ",min_y=" + case_2_wall_1_min_y + ",max_y=" + case_2_wall_1_max_y + ",steps=50");
+    m_new_obstacle.push_back("name=case_2_wall_1,min_x=" + case_2_wall_1_min_x + ",max_x=" + case_2_wall_1_max_x + ",min_y=" + case_2_wall_1_min_y + ",max_y=" + case_2_wall_1_max_y + ",steps=50");
 
-      // Wall 2
-      string case_2_wall_2_min_x = to_string(int_min_x + 1.0 / 3.0 * (int_max_x - int_min_x) - .5);
-      string case_2_wall_2_max_x = to_string(int_min_x + 1.0 / 3.0 * (int_max_x - int_min_x) + .5);
-      string case_2_wall_2_min_y = to_string(int_min_y);
-      string case_2_wall_2_max_y = to_string((int_min_y + int_max_y) / 2.0);
+    // Wall 2
+    string case_2_wall_2_min_x = to_string(int_min_x + 1.0 / 3.0 * (int_max_x - int_min_x) - .5);
+    string case_2_wall_2_max_x = to_string(int_min_x + 1.0 / 3.0 * (int_max_x - int_min_x) + .5);
+    string case_2_wall_2_min_y = to_string(int_min_y);
+    string case_2_wall_2_max_y = to_string((int_min_y + int_max_y) / 2.0);
 
-      m_new_obstacle.push_back("name=case_2_wall_2,min_x=" + case_2_wall_2_min_x + ",max_x=" + case_2_wall_2_max_x + ",min_y=" + case_2_wall_2_min_y + ",max_y=" + case_2_wall_2_max_y + ",steps=50");
+    m_new_obstacle.push_back("name=case_2_wall_2,min_x=" + case_2_wall_2_min_x + ",max_x=" + case_2_wall_2_max_x + ",min_y=" + case_2_wall_2_min_y + ",max_y=" + case_2_wall_2_max_y + ",steps=50");
 
-      break;
-    }
-    case 3: // Split Maze
-    {
-      // Wall 1
-      string case_3_wall_1_min_x = to_string(int_min_x + 1.0 / 3.0 * (int_max_x - int_min_x));
-      string case_3_wall_1_max_x = to_string(int_max_x);
-      string case_3_wall_1_min_y = to_string((int_min_y + int_max_y) / 2.0 - .5);
-      string case_3_wall_1_max_y = to_string((int_min_y + int_max_y) / 2.0 + .5);
+    break;
+  }
+  case 3: // Split Maze
+  {
+    // Wall 1
+    string case_3_wall_1_min_x = to_string(int_min_x + 1.0 / 3.0 * (int_max_x - int_min_x));
+    string case_3_wall_1_max_x = to_string(int_max_x);
+    string case_3_wall_1_min_y = to_string((int_min_y + int_max_y) / 2.0 - .5);
+    string case_3_wall_1_max_y = to_string((int_min_y + int_max_y) / 2.0 + .5);
 
-      m_new_obstacle.push_back("name=case_3_wall_1,min_x=" + case_3_wall_1_min_x + ",max_x=" + case_3_wall_1_max_x + ",min_y=" + case_3_wall_1_min_y + ",max_y=" + case_3_wall_1_max_y + ",steps=50");
+    m_new_obstacle.push_back("name=case_3_wall_1,min_x=" + case_3_wall_1_min_x + ",max_x=" + case_3_wall_1_max_x + ",min_y=" + case_3_wall_1_min_y + ",max_y=" + case_3_wall_1_max_y + ",steps=50");
 
-      break;
-    }
+    break;
+  }
   }
 }
 
@@ -259,18 +259,18 @@ void GenObstacle::registerVariables()
 bool GenObstacle::buildReport()
 {
   //TODO: Pretty prints once it's working
-  // m_msgs << "============================================" << endl;
-  // m_msgs << "File:                                       " << endl;
-  // m_msgs << "============================================" << endl;
+  m_msgs << "============================================" << endl;
+  m_msgs << "File:                                       " << endl;
+  m_msgs << "============================================" << endl;
 
-  // ACTable actab(4);
-  // actab << "TL | BL | TR | BR";
-  // actab.addHeaderLines();
-  // actab << "(" + to_string(min_x) + ", " + to_string(min_y) + ")"
-  //       << "(" + to_string(min_x) + ", " + to_string(max_y) + ")"
-  //       << "(" + to_string(max_x) + ", " + to_string(min_y) + ")"
-  //       << "(" + to_string(max_x) + ", " + to_string(max_y) + ")";
-  // m_msgs << actab.getFormattedString();
+  ACTable actab(4);
+  actab << "TL | BL | TR | BR";
+  actab.addHeaderLines();
+  actab << "(" + to_string(int_min_x) + ", " + to_string(int_min_y) + ")"
+        << "(" + to_string(int_min_x) + ", " + to_string(int_max_y) + ")"
+        << "(" + to_string(int_max_x) + ", " + to_string(int_min_y) + ")"
+        << "(" + to_string(int_max_x) + ", " + to_string(int_max_y) + ")";
+  m_msgs << actab.getFormattedString();
 
   return (true);
 }

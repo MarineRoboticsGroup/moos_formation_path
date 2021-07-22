@@ -11,10 +11,12 @@ SET(SRC
 
 ADD_EXECUTABLE(pRangeToPosition ${SRC})
 
+# Geodesy, etc. from pNodeReporter
 TARGET_LINK_LIBRARIES(pRangeToPosition
    ${MOOS_LIBRARIES}
    apputil
    mbutil
    m
-   pthread)
+   pthread
+   ${MOOSGeodesy_LIBRARIES})
 

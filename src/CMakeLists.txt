@@ -12,6 +12,18 @@
 FILE(GLOB LOCAL_LIBRARY_DIRS ./lib_*)
 INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS})
 
+#===============================================================================
+# FINDING MOOSGeodesy' HEADERS AND LIBRARIES...  
+#===============================================================================
+# moos - http://www.robots.ox.ac.uk/~mobile/MOOS/wiki/pmwiki.php
+find_package(MOOSGeodesy)
+INCLUDE_DIRECTORIES(${MOOSGeodesy_INCLUDE_DIRS})
+
+# message("+++++++++++++++++++++++++++++++++++++++++")
+# message("MOOSGeodesy_INCLUDE_DIRS:" ${MOOSGeodesy_INCLUDE_DIRS})
+# message("MOOSGeodesy_LIBRARY_PATH:" ${MOOSGeodesy_LIBRARY_PATH})
+# message("+++++++++++++++++++++++++++++++++++++++++")
+
 #============================================================================
 # List the subdirectories to build...
 #============================================================================

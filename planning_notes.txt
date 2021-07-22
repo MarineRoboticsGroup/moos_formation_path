@@ -6,7 +6,8 @@
     Use est for trail behavior X
         - Need to adjust how speed is handled X
         - Add delay to prevent initial errors
-        - Figure out why trailpoint grows wildly at points (particularly around turns?) (doublecheck lat & lon)
+        - Figure out why trailpoint grows wildly at points (resolved) X
+        - Follower # scaling
 
 2. Environment
     Obstacles visualization X
@@ -14,19 +15,18 @@
     Three environments X
 
 2. Leader
-    Traj to waypoints
-    Environment Integration
+    Traj to waypoints X
+    Environment Integration X
         - Start / end regions
         - Tune obstacle avoidance
-    Preplanning:
-        A*
-        RRT*
+    Preplanning: X
+        A* (can use range_only_robotics) X
+        RRT* (RRT in range_only_robotics)
 
 3. Full System
     Tuning:
         bearing / range noise
     Meta-agent tuning
-    Follower # scaling
     Integration Test
 
 4. Extensions

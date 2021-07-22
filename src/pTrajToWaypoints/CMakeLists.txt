@@ -13,6 +13,7 @@ ADD_EXECUTABLE(pTrajToWaypoints ${SRC})
 
 TARGET_LINK_LIBRARIES(pTrajToWaypoints
    ${MOOS_LIBRARIES}
+   geometry
    apputil
    mbutil
    m

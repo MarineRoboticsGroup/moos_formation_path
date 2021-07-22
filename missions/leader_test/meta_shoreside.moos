@@ -3,8 +3,8 @@
 //
 
 ServerHost = localhost
-ServerPort = $(SPORT)
-Community  = $(SNAME)
+ServerPort = $(VPORT)
+Community  = $(VNAME)
 
 
 //--------------------------------------------------------
@@ -87,7 +87,6 @@ ProcessConfig = pMarineViewer
   button_one   = RETURN_ALL=false
 
   button_two   = RETURN  # RETURN_ALL=true
-  button_two   = TRAIL=false
 }
 
 //--------------------------------------------------------

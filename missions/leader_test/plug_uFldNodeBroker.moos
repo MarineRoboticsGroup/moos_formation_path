@@ -16,4 +16,5 @@ ProcessConfig = uFldNodeBroker
   BRIDGE = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
   BRIDGE = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
   BRIDGE = src=CRS_RANGE_REQUEST // Range
+  BRIDGE = src=VIEW_MARKER // Endgoal
 }

@@ -1,9 +1,0 @@
-//------------------------------------------------
-// pTrajToWaypoints config block
-
-ProcessConfig = pTrajToWaypoints
-{
-   AppTick   = 4
-   CommsTick = 4
-}
-

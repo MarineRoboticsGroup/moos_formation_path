@@ -32,7 +32,7 @@ done
 #  Part 3: Create the .moos and .bhv files. 
 #-------------------------------------------------------
 VNAME1="leader"         # The first vehicle Community
-START_POS1="80,-125"    # Vehicle 1 Behavior configurations
+START_POS1="10,-190"    # Vehicle 1 Behavior configurations
 
 SHORE_LISTEN="9300"
 
@@ -42,8 +42,8 @@ nsplug meta_vehicle.moos targ_leader.moos -f WARP=$TIME_WARP \
    VTYPE="kayak"      SHORE_LISTEN=$SHORE_LISTEN
 
 nsplug meta_shoreside.moos targ_shoreside.moos -f WARP=$TIME_WARP \
-   SNAME="shoreside"  SHARE_LISTEN=$SHORE_LISTEN                  \
-   SPORT="9000"
+   VNAME="shoreside"  SHARE_LISTEN=$SHORE_LISTEN                  \
+   VPORT="9000"
 
 nsplug meta_leader.bhv targ_leader.bhv -i -f VNAME=$VNAME1  \
     OVNAME=$VNAME1 START_POS=$START_POS1

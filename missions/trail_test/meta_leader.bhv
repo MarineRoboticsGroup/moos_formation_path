@@ -29,7 +29,7 @@ Behavior = BHV_Loiter
   pwt       = 100
   condition = MODE==LOITERING
 
-         speed = 2.5
+         speed = $(SPEED)
      clockwise = true
         radius = 8 
      nm_radius = 20 

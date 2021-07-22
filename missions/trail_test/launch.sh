@@ -33,6 +33,7 @@ done
 #-------------------------------------------------------
 VNAME1="leader"         # The first vehicle Community
 START_POS1="80,-125"    # Vehicle 1 Behavior configurations
+SPEED1="2.5"
 
 VNAME2="follower_1"         # The second vehicle Community
 START_POS2="50,-50"   # Vehicle 2 Behavior configurations
@@ -55,20 +56,21 @@ nsplug meta_vehicle.moos targ_follower_1.moos -f WARP=$TIME_WARP \
    VNAME=$VNAME2      START_POS=$START_POS2                 \
    VPORT="9002"       SHARE_LISTEN="9302"                   \
    VTYPE="kayak"      SHORE_LISTEN=$SHORE_LISTEN            \
-   KNOWS_CONTACTS=1
+   KNOWS_CONTACTS=1   LEADER_SPEED=$(SPEED1)
 
 nsplug meta_vehicle.moos targ_follower_2.moos -f WARP=$TIME_WARP \
    VNAME=$VNAME3      START_POS=$START_POS3                 \
    VPORT="9003"       SHARE_LISTEN="9303"                   \
    VTYPE="kayak"      SHORE_LISTEN=$SHORE_LISTEN            \
-   KNOWS_CONTACTS=1
+   KNOWS_CONTACTS=1   LEADER_SPEED=$(SPEED1)
 
 nsplug meta_shoreside.moos targ_shoreside.moos -f WARP=$TIME_WARP \
-   SNAME="shoreside"  SHARE_LISTEN=$SHORE_LISTEN                  \
-   SPORT="9000"
+   VNAME="shoreside"  SHARE_LISTEN=$SHORE_LISTEN                  \
+   VPORT="9000"
 
 nsplug meta_leader.bhv targ_leader.bhv -i -f VNAME=$VNAME1  \
-    OVNAME=$VNAME1 START_POS=$START_POS1
+    OVNAME=$VNAME1 START_POS=$START_POS1                    \
+    SPEED=$SPEED1
 
 nsplug meta_follower.bhv targ_follower_1.bhv -i -f VNAME=$VNAME2  \
     OVNAME=$VNAME2 START_POS=$START_POS2                        \

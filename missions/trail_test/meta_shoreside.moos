@@ -3,8 +3,8 @@
 //
 
 ServerHost = localhost
-ServerPort = $(SPORT)
-Community  = $(SNAME)
+ServerPort = $(VPORT)
+Community  = $(VNAME)
 
 
 //--------------------------------------------------------

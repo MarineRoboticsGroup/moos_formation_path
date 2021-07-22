@@ -5,4 +5,5 @@ ProcessConfig = pRangeToPosition
 {
   AppTick   = 4
   CommsTick = 4
+  LEADER_SPEED=$(LEADER_SPEED)
 }

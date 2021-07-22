@@ -3,8 +3,8 @@
 
 ProcessConfig = pShare
 {
-  AppTick    = 2
-  CommsTick  = 2
+  AppTick    = 10
+  CommsTick  = 10
 
   input = route =  localhost:$(SHARE_LISTEN)
 
