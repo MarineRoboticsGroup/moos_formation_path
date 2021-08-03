@@ -1,0 +1,10 @@
+//---------------------------------------
+ProcessConfig = pGenObstacle
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  // Preset environments
+  // Valid values are: 1, 2, 3
+  env = 2
+}

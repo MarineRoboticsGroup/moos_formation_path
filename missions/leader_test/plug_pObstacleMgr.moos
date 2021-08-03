@@ -1,0 +1,17 @@
+//------------------------------------------
+ProcessConfig = pObstacleMgr
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  max_pts_per_cluster = 50
+  max_age_per_point = 60
+  alert_range = 35
+
+  given_max_duration = off
+
+  ignore_range = 40
+  lasso = true
+  lasso_radius = 6
+  lasso_points = 8
+}

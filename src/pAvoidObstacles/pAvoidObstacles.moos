@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pAvoidObstacles config block
+
+ProcessConfig = pAvoidObstacles
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

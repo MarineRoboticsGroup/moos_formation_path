@@ -1,0 +1,9 @@
+//---------------------------------------
+ProcessConfig = pTrajToWaypoints
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  traj = $(TRAJ)
+  visit_radius = 4.0
+}

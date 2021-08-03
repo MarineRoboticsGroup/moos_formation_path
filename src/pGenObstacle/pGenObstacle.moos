@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pGenObstacle config block
+
+ProcessConfig = pGenObstacle
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

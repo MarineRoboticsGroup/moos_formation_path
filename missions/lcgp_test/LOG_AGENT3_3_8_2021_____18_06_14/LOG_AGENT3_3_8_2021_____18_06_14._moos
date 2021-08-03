@@ -1,0 +1,293 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% LOG FILE:       ./LOG_AGENT3_3_8_2021_____18_06_14/LOG_AGENT3_3_8_2021_____18_06_14._moos
+%% FILE OPENED ON  Wed Dec 31 19:00:00 1969
+%% LOGSTART               16280283743.3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ServerHost = localhost
+ServerPort = 9003
+
+// Community name IS the vehicle name
+Community  = agent3
+
+MOOSTimeWarp = 10
+LatOrigin  = 43.825300 
+LongOrigin = -70.330400 
+
+
+
+//------------------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB             @ NewConsole = false
+  Run = pRealm             @ NewConsole = false
+  Run = uSimMarine         @ NewConsole = false
+  Run = pLogger            @ NewConsole = false
+  Run = pNodeReporter      @ NewConsole = false
+  Run = pMarinePID         @ NewConsole = false
+  Run = pHelmIvP           @ NewConsole = false
+  Run = uProcessWatch      @ NewConsole = false
+  Run = pShare             @ NewConsole = false
+  Run = pHostInfo          @ NewConsole = false
+  Run = uFldNodeBroker     @ NewConsole = false
+  Run = uFldMessageHandler @ NewConsole = false
+  Run = pTrajToWaypoints   @ NewConsole = false
+  Run = pObstacleMgr       @ NewConsole = false
+
+  Run = pContactMgrV20     @ NewConsole = false
+  Run = pCommsMgr          @ NewConsole = false
+  Run = pAvoidObstacles    @ NewConsole = false
+}
+
+//--------------------------------------------------
+// uFldNodeBroker configuration block from plugin
+
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  TRY_SHORE_HOST = pshare_route=localhost:9300
+
+  BRIDGE = src=VIEW_POLYGON
+  BRIDGE = src=VIEW_POINT
+  BRIDGE = src=VIEW_SEGLIST
+  BRIDGE = src=VIEW_CIRCLE
+  BRIDGE = src=APPCAST
+  BRIDGE = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  BRIDGE = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+  BRIDGE = src=CRS_RANGE_REQUEST // Range
+  BRIDGE = src=VIEW_MARKER // Endgoal
+}
+
+//---------------------------------------------------------
+// pShare Config Block  (Created from Plugin)
+
+ProcessConfig = pShare
+{
+  AppTick    = 2
+  CommsTick  = 2
+
+  input = route =  localhost:9303
+
+  // Relay range messages to all agents
+  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9301
+  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9302
+  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9303
+  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9304
+
+  // Relay anchor exact positions
+  output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9301
+  output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9302
+  output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9303
+  output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9304
+}
+
+
+//--------------------------------------------------
+// pHostInfo configuration block from plugin
+
+ProcessConfig = pHostInfo
+{
+  AppTick 	= 1
+  CommsTick 	= 1
+
+  DEFAULT_HOSTIP = localhost
+}
+
+
+//--------------------------------------------------
+// uFldMessageHandler configuration block from plugin
+
+ProcessConfig = uFldMessageHandler
+{
+  AppTick   = 3
+  CommsTick = 3
+
+  STRICT_ADDRESSING = true
+}
+
+
+//------------------------------------------
+ProcessConfig = uSimMarine
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  START_POS = 22,-188
+  PREFIX    = NAV
+}
+
+//---------------------------------------
+ProcessConfig = pHelmIvP
+{
+  AppTick    = 4
+  CommsTick  = 4
+  
+  Behaviors    = targ_agent3.bhv  
+  Verbose      = false
+  Domain       = course:0:359:360
+
+// #ifdef VNAME follower // Doesn't appear to change behavior
+//   Domain       = speed:0:2:11
+// #else
+  Domain       = speed:0:5:26
+// #endif
+
+}
+
+//---------------------------------------
+ProcessConfig = pMarinePID
+{
+  AppTick    = 10
+  CommsTick  = 10
+  
+  VERBOSE       = true
+  DEPTH_CONTROL = false
+  ACTIVE_START  = true
+  
+  // Yaw PID controller
+  YAW_PID_KP             = 0.4
+  YAW_PID_KD             = 0.1
+  YAW_PID_KI             = 0.0
+  YAW_PID_INTEGRAL_LIMIT = 0.07
+  
+  // Speed PID controller
+  SPEED_PID_KP           = 1.0
+  SPEED_PID_KD           = 0.0
+  SPEED_PID_KI           = 0.0
+  SPEED_PID_INTEGRAL_LIMIT = 0.07
+  
+  // Maximums
+  MAXRUDDER  = 100
+  MAXTHRUST  = 100
+  
+  // A non-zero SPEED_FACTOR overrides use of SPEED_PID
+  // Will set DESIRED_THRUST = DESIRED_SPEED * SPEED_FACTOR
+  SPEED_FACTOR = 20
+}
+
+//--------------------------------------------------
+// pLogger Configuration Block (Created from Plugin)
+
+ProcessConfig = pLogger
+{
+  AppTick 	= 10
+  CommsTick 	= 10
+  
+  File		= LOG_AGENT3
+  PATH		= ./
+  SyncLog 	= true @ 0.2
+  AsyncLog 	= true
+  FileTimeStamp = true
+
+  Log = IVPHELM_LIFE_EVENT @ 0 nosync
+
+  // Log it all!!!!!
+  LogAuxSrc = true
+  WildCardLogging = true 
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+}
+
+//---------------------------------------
+ProcessConfig = pNodeReporter
+{
+  AppTick     = 2
+  CommsTick   = 2
+  
+  platform_type = kayak
+}
+
+//---------------------------------------
+ProcessConfig = uProcessWatch
+{
+  AppTick   = 2
+  CommsTick = 2
+  
+  WATCH  = uSimMarine
+  WATCH  = pLogger
+  WATCH  = pNodeReporter
+  WATCH  = pMarinePID
+  WATCH  = pHelmIvP
+
+  NOWATCH = uXMS*
+}
+
+//---------------------------------------
+ProcessConfig = pTrajToWaypoints
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  traj = [(22,-188),(30,-180),(33,-176),(36,-170),(39,-161),(43,-154),(45,-151),(48,-141),(49,-131),(50,-130),(57,-123),(55,-119),(56,-108),(58,-100),(63,-93),(73,-97),(84,-98),(95,-102),(100,-101),(111,-104),(114,-107),(125,-108),(135,-104),(142,-97),(144,-90),(150,-81),(151,-73),(157,-66),(160,-60),(160,-51)]
+  visit_radius = 4.0
+}
+
+//------------------------------------------
+ProcessConfig = pObstacleMgr
+{
+  AppTick   = 10
+  CommsTick = 10
+
+  max_pts_per_cluster = 50
+  max_age_per_point = 60
+  alert_range = 35
+
+  given_max_duration = off
+
+  ignore_range = 40
+  lasso = true
+  lasso_radius = 6
+  lasso_points = 8
+}
+
+//--------------------------------------------------------
+// pBasicContactMgr Configuration Block (Created from Plugin)
+
+ProcessConfig = pContactMgrV20
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  CONTACT_MAX_AGE = 3600
+  display_radii = false
+
+  ALERT_RANGE_COLOR = gray70
+  CPA_RANGE_COLOR   = gray30
+
+  Alert = id=avd, var=CONTACT_INFO, val="name=$[VNAME] # contact=$[VNAME]"
+  Alert = id=avd, alert_range=50, cpa_range=60
+
+  Alert = id=trail, var=TRAIL_INFO, val="name=$[VNAME] # contact=$[VNAME]"
+  Alert = id=trail, alert_range=140, cpa_range=185
+}
+
+//--------------------------------------------------------
+// pCommsMgr Configuration Block (Created from Plugin)
+
+ProcessConfig = pCommsMgr
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  NAME = agent3
+  NUM_AGENTS = 4
+  MAX_RATE = 1000
+}
+
+//--------------------------------------------------------
+// pAvoidObstacles Configuration Block (Created from Plugin)
+
+ProcessConfig = pAvoidObstacles
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  NAME = agent3
+}
+
+
+

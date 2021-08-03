@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pEOptimality config block
+
+ProcessConfig = pEOptimality
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

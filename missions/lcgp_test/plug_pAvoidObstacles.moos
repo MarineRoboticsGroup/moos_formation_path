@@ -1,0 +1,10 @@
+//--------------------------------------------------------
+// pAvoidObstacles Configuration Block (Created from Plugin)
+
+ProcessConfig = pAvoidObstacles
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  NAME = $(VNAME)
+}

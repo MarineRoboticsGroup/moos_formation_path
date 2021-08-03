@@ -1,0 +1,213 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% LOG FILE:       ./LOG_SHORESIDE_3_8_2021_____18_06_15/LOG_SHORESIDE_3_8_2021_____18_06_15._moos
+%% FILE OPENED ON  Wed Dec 31 19:00:00 1969
+%% LOGSTART               16280283752.3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//*******************************************************
+// ShoreSide Configuration File
+//
+
+ServerHost = localhost
+ServerPort = 9000
+Community  = shoreside
+
+
+//--------------------------------------------------------
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pRealm          @ NewConsole = false
+  Run = pMarineViewer   @ NewConsole = false
+
+  Run = pShare          @ NewConsole = false
+  Run = pHostInfo       @ NewConsole = false
+  Run = uFldShoreBroker @ NewConsole = false
+  Run = uFldNodeComms   @ NewConsole = false
+  Run = pLogger         @ NewConsole = false
+  Run = pGenObstacle    @ NewConsole = false
+
+  Run = uFldContactRangeSensor @ NewConsole = false
+}
+
+MOOSTimeWarp = 10
+LatOrigin  = 43.825300 
+LongOrigin = -70.330400 
+
+
+//---------------------------------------------------------
+// pShare Config Block  (Created from Plugin)
+
+ProcessConfig = pShare
+{
+  AppTick    = 2
+  CommsTick  = 2
+
+  input = route =  localhost:9300
+
+  // Relay range messages to all agents
+  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9301
+  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9302
+  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9303
+  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9304
+
+  // Relay anchor exact positions
+  output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9301
+  output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9302
+  output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9303
+  output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9304
+}
+
+
+//--------------------------------------------------
+// pHostInfo configuration block from plugin
+
+ProcessConfig = pHostInfo
+{
+  AppTick 	= 1
+  CommsTick 	= 1
+
+  DEFAULT_HOSTIP = localhost
+}
+
+
+//--------------------------------------------------
+// pLogger Configuration Block (Created from Plugin)
+
+ProcessConfig = pLogger
+{
+  AppTick 	= 10
+  CommsTick 	= 10
+  
+  File		= LOG_SHORESIDE
+  PATH		= ./
+  SyncLog 	= true @ 0.2
+  AsyncLog 	= true
+  FileTimeStamp = true
+
+  Log = IVPHELM_LIFE_EVENT @ 0 nosync
+
+  // Log it all!!!!!
+  LogAuxSrc = true
+  WildCardLogging = true 
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+}
+
+//---------------------------------------
+ProcessConfig = pGenObstacle
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  // Preset environments
+  // Valid values are: 1, 2, 3
+  env = 2
+}
+
+
+===============================================================
+uFldContactRangeSensor Example MOOS Configuration
+===============================================================
+
+ProcessConfig = uFldContactRangeSensor
+{
+  AppTick   = 4
+  CommsTick = 4
+
+  // Configuring aspects of the vehicles in the sim
+  // reach_distance = default = 100  // in meters or {nolimit}
+  // reply_distance = default = 100  // in meters or {nolimit}
+  ping_wait      = default = 1   // in seconds
+
+  // Configuring manner of reporting
+  report_vars    = both
+  ground_truth   = true
+
+  // Configuring visual artifacts
+  // ping_color     = white
+  // echo_color    = chartreuse
+
+  // Configuring Artificial Noise
+  // rn_algorithm   = gaussian,sigma=10
+
+  // Configuring Probability Detection with Exponential Decay
+  // exponential_decay = false
+
+  // Configuring Sensor Arcs
+  sensor_arc = 360
+}
+
+
+//--------------------------------------------------
+// uFldShoreBroker Configuration Block
+
+ProcessConfig = uFldShoreBroker
+{
+  AppTick       = 10
+  CommsTick     = 10
+
+  qbridge  = DEPLOY, RETURN, STATION, NODE_REPORT, NODE_MESSAGE
+  qbridge  = MOOS_MANUAL_OVERRIDE, APPCAST_REQ, CRS_RANGE_REPORT
+  
+  bridge   = src=GIVEN_OBSTACLE
+}
+
+//--------------------------------------------------
+// uFldNodeComms Configuration Block
+
+ProcessConfig = uFldNodeComms
+{
+  AppTick       = 2
+  CommsTick     = 2
+
+           comms_range = 250
+        critical_range = 25
+      min_msg_interval = 20
+        max_msg_length = 1000
+                groups = true
+  view_node_rpt_pulses = true
+}
+
+//--------------------------------------------------------
+ProcessConfig = pMarineViewer
+{
+  AppTick    = 4
+  CommsTick  = 4
+
+  tiff_file            = forrest19.tif
+  set_pan_x            = -90
+  set_pan_y            = -280
+  zoom                 = 0.55
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names+shortmode
+
+  appcast_viewable     = true
+  appcast_color_scheme = indigo
+
+  scope = CONTACT_INFO
+
+  action = STATION_ALL = false
+  action = STATION_ALL = true
+
+  button_one   = DEPLOY  # DEPLOY_ALL=true
+  button_one   = MOOS_MANUAL_OVERRIDE_ALL=false
+  button_one   = RETURN_ALL=false
+
+  button_two   = RETURN  # RETURN_ALL=true
+}
+
+//--------------------------------------------------------
+ProcessConfig = uXMS
+{
+  AppTick    = 5
+  CommsTick  = 5
+
+  var  = NODE_REPORT
+  var  = VIEW_POLYGON
+  var  = VIEW_POINT
+  var  = DEPLOY_ALL
+}
+

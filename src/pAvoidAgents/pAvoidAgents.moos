@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pAvoidAgents config block
+
+ProcessConfig = pAvoidAgents
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

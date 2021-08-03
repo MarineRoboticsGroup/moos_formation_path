@@ -1,0 +1,12 @@
+//--------------------------------------------------------
+// pCommsMgr Configuration Block (Created from Plugin)
+
+ProcessConfig = pCommsMgr
+{
+  AppTick   = 2
+  CommsTick = 2
+
+  NAME = $(VNAME)
+  NUM_AGENTS = 4
+  MAX_RATE = 1000
+}

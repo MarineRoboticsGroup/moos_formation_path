@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pCommsMgr config block
+
+ProcessConfig = pCommsMgr
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
