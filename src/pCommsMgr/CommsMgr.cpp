@@ -19,10 +19,10 @@ CommsMgr::CommsMgr()
 {
   max_bits_per_min = 1000;
   num_agents = 0;
-  is_anchor = false;
 
   self_name = "";
-  self_pos = {0.0, 0.0, 0.0};
+  self_gnd_pos = {0.0, 0.0, 0.0};
+  self_est_pos = {0.0, 0.0, 0.0};
 }
 
 //---------------------------------------------------------
@@ -79,8 +79,8 @@ bool CommsMgr::OnNewMail(MOOSMSG_LIST &NewMail)
       agent_to_agent_range[names] = vals;
     }
 
-    // Anchor positions
-    else if (key == "ALL_ANCHORS")
+    // Est positions
+    else if (key == "ALL_EST_POSES")
     {
       // Parse msg
       string sval = msg.GetString();
@@ -92,7 +92,7 @@ bool CommsMgr::OnNewMail(MOOSMSG_LIST &NewMail)
         double time = stod(tokStringParse(sval, "TIME", ',', '='));
 
         vector<double> vals = {x, y, time};
-        anchor_to_pos[name] = vals;
+        name_to_pos[name] = vals;
       }
     }
 
@@ -104,11 +104,18 @@ bool CommsMgr::OnNewMail(MOOSMSG_LIST &NewMail)
       double time = stod(tokStringParse(sval, "TIME", ',', '='));
 
       vector<double> vals = {x, y, time};
-      self_pos = vals;
-      if (is_anchor)
-      {
-        anchor_to_pos[self_name] = vals;
-      }
+      self_gnd_pos = vals;
+    }
+
+    else if (key == "INTERNAL_EST_SELF_REPORT")
+    {
+      string sval = msg.GetString();
+      double x = stod(tokStringParse(sval, "X", ',', '='));
+      double y = stod(tokStringParse(sval, "Y", ',', '='));
+      double time = stod(tokStringParse(sval, "TIME", ',', '='));
+
+      vector<double> vals = {x, y, time};
+      self_est_pos = vals;
     }
 
     else if (key != "APPCAST_REQ") // handled by AppCastingMOOSApp
@@ -147,28 +154,27 @@ bool CommsMgr::Iterate()
     Notify("INTERNAL_RANGE_REPORT", agent_range_report);
   }
 
-  // Pass on anchor position
-  // Anchor positions
-  for (const auto &pair : anchor_to_pos)
+  // Pass on est position
+  for (const auto &pair : name_to_pos)
   {
     string name = pair.first;
     vector<double> vals = pair.second;
-    string anchor_pos_report = "NAME=" + name +
-                               ",X=" + to_string(vals[0]) +
-                               ",Y=" + to_string(vals[1]) +
-                               ",TIME=" + to_string(vals[2]);
-    Notify("INTERNAL_POS_REPORT", anchor_pos_report);
+    string est_pos_report = "NAME=" + name +
+                            ",X=" + to_string(vals[0]) +
+                            ",Y=" + to_string(vals[1]) +
+                            ",TIME=" + to_string(vals[2]);
+    Notify("INTERNAL_POS_REPORT", est_pos_report);
   }
 
   // Pass on self position
-  if (self_pos[2] != 0)
+  if (self_gnd_pos[2] != 0)
   {
     // Self pos
-    string self_pos_report = "NAME=" + self_name +
-                             ",X=" + to_string(self_pos[0]) +
-                             ",Y=" + to_string(self_pos[1]) +
-                             ",TIME=" + to_string(self_pos[2]);
-    Notify("INTERNAL_POS_REPORT", self_pos_report);
+    string self_gnd_pos_report = "NAME=" + self_name +
+                                 ",X=" + to_string(self_gnd_pos[0]) +
+                                 ",Y=" + to_string(self_gnd_pos[1]) +
+                                 ",TIME=" + to_string(self_gnd_pos[2]);
+    Notify("INTERNAL_GND_SELF_REPORT", self_gnd_pos_report);
   }
 
   // External Comms
@@ -193,14 +199,13 @@ bool CommsMgr::Iterate()
     Notify("AGENT_RANGE_REPORT", agent_range_report);
   }
 
-  // Anchor specific
-  if (is_anchor)
+  if (self_est_pos[2] != 0)
   {
-    string anchor_msg = "NAME=" + self_name +
-                        ",X=" + to_string(self_pos[0]) +
-                        ",Y=" + to_string(self_pos[1]) +
-                        ",TIME=" + to_string(self_pos[2]);
-    Notify("ANCHOR_REPORT", anchor_msg);
+    string self_est_pos_report = "NAME=" + self_name +
+                                 ",X=" + to_string(self_est_pos[0]) +
+                                 ",Y=" + to_string(self_est_pos[1]) +
+                                 ",TIME=" + to_string(self_est_pos[2]);
+    Notify("EST_POS_REPORT", self_est_pos_report);
   }
   AppCastingMOOSApp::PostReport();
   return (true);
@@ -243,23 +248,6 @@ bool CommsMgr::OnStartUp()
       handled = true;
     }
 
-    // Set is_anchor when enough info is known
-    if (num_agents != 0 && self_name.length() > 0)
-    {
-      // Isolate digits
-      int start_index = 0;
-      for (; start_index < self_name.length(); start_index++)
-      {
-        if (isdigit(self_name[start_index]))
-          break;
-      }
-      string name_id = self_name.substr(start_index, self_name.length() - start_index);
-
-      // Determine if in range of anchors
-      int id = stoi(name_id);
-      is_anchor = id > num_agents - 3;
-    }
-
     if (!handled)
       reportUnhandledConfigWarning(orig);
   }
@@ -273,10 +261,18 @@ bool CommsMgr::OnStartUp()
 void CommsMgr::registerVariables()
 {
   AppCastingMOOSApp::RegisterVariables();
+  // Range sensor
   Register("CRS_RANGE_REPORT", 0);
+
+  // Neighboring ranges
   Register("ALL_RANGES", 0);
-  Register("ALL_ANCHORS", 0);
+
+  // Est poses for all agents
+  Register("ALL_EST_POSES", 0);
+
+  // Gnd and est self pos, respectively
   Register("NODE_REPORT_LOCAL", 0);
+  Register("INTERNAL_EST_SELF_REPORT", 0);
 }
 
 //------------------------------------------------------------
@@ -289,12 +285,12 @@ bool CommsMgr::buildReport()
   m_msgs << "============================================" << endl;
 
   ACTable actab(4);
-  actab << "Self-Agent | Agent-Agent | Anchor | Self";
+  actab << "Self-Agent | Agent-Agent | Est Pose | Self";
   actab.addHeaderLines();
   actab << to_string(self_to_agent_range.size())
         << to_string(agent_to_agent_range.size())
-        << to_string(anchor_to_pos.size())
-        << to_string(self_pos[0]) + ", " + to_string(self_pos[1]) + ", " + to_string(self_pos[2]);
+        << to_string(name_to_pos.size())
+        << to_string(self_gnd_pos[0]) + ", " + to_string(self_gnd_pos[1]) + ", " + to_string(self_gnd_pos[2]);
   m_msgs << actab.getFormattedString();
 
   return (true);

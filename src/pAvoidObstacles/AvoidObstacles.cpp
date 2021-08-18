@@ -57,7 +57,6 @@ bool AvoidObstacles::OnNewMail(MOOSMSG_LIST &NewMail)
 
       //Parse pts
       string points = sval.substr(sval.find("{") + 1, sval.find("}") - 5); // Remove curly brackets
-      Notify("TEST_2", name + ": " + points);
       int count = 0;
       size_t index = 0;
       string elt;
@@ -85,20 +84,16 @@ bool AvoidObstacles::OnNewMail(MOOSMSG_LIST &NewMail)
       all_obstacles[name] = vals;
     }
 
-    else if (key == "INTERNAL_POS_REPORT")
+    else if (key == "INTERNAL_GND_SELF_REPORT")
     {
       string sval = msg.GetString();
-      string name = tokStringParse(sval, "NAME", ',', '=');
 
-      if (name == self_name)
-      {
-        double x = stod(tokStringParse(sval, "X", ',', '='));
-        double y = stod(tokStringParse(sval, "Y", ',', '='));
-        double time = stod(tokStringParse(sval, "TIME", ',', '='));
+      double x = stod(tokStringParse(sval, "X", ',', '='));
+      double y = stod(tokStringParse(sval, "Y", ',', '='));
+      double time = stod(tokStringParse(sval, "TIME", ',', '='));
 
-        vector<double> vals = {x, y, time};
-        self_pos = vals;
-      }
+      vector<double> vals = {x, y, time};
+      self_pos = vals;
     }
 
     else if (key != "APPCAST_REQ") // handled by AppCastingMOOSApp
@@ -140,11 +135,13 @@ bool AvoidObstacles::Iterate()
 
       // Get dist to obstacle
       double dx = max(0.0, max(min_x - self_pos[0], self_pos[0] - max_x));
-      if (dx == min_x - self_pos[0]) {
+      if (dx == min_x - self_pos[0])
+      {
         dx = -dx;
       }
       double dy = max(0.0, max(min_y - self_pos[1], self_pos[1] - max_y));
-      if (dy == min_y - self_pos[1]) {
+      if (dy == min_y - self_pos[1])
+      {
         dy = -dy;
       }
 
@@ -214,7 +211,7 @@ void AvoidObstacles::registerVariables()
 {
   AppCastingMOOSApp::RegisterVariables();
   Register("GIVEN_OBSTACLE", 0);
-  Register("INTERNAL_POS_REPORT", 0);
+  Register("INTERNAL_GND_SELF_REPORT", 0);
 }
 
 //------------------------------------------------------------

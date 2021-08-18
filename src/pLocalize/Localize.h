@@ -13,27 +13,33 @@ using namespace std;
 
 class Localize : public AppCastingMOOSApp
 {
-public:
-  Localize();
-  ~Localize();
+  public:
+    Localize();
+    ~Localize();
 
-protected: // Standard MOOSApp functions to overload
-  bool OnNewMail(MOOSMSG_LIST &NewMail);
-  bool Iterate();
-  bool OnConnectToServer();
-  bool OnStartUp();
+  protected: // Standard MOOSApp functions to overload
+    bool OnNewMail(MOOSMSG_LIST &NewMail);
+    bool Iterate();
+    bool OnConnectToServer();
+    bool OnStartUp();
 
-protected: // Standard AppCastingMOOSApp function to overload
-  bool buildReport();
+  protected: // Standard AppCastingMOOSApp function to overload
+    bool buildReport();
 
-protected:
-  void registerVariables();
+  protected:
+    void registerVariables();
 
-private: // Configuration variables
+  private: // Configuration variables
+    string self_name;
+    int self_id;
+    int num_agents;
 
-
-private: // State variables
-
+  private: // State variables
+    vector<double> self_est_pos;
+    vector<double> self_gnd_pos;
+    map<string, vector<double>> neighbor_ranges;
+    map<string, vector<double>> all_est_poses;
+    double last_iterate_time;
 };
 
 #endif

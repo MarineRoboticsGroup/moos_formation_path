@@ -9,10 +9,10 @@ ProcessConfig = pShare
   input = route =  localhost:$(SHARE_LISTEN)
 
   // Relay range messages to all agents
-  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9301
-  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9302
-  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9303
-  output = src_name=ANCHOR_REPORT, dest_name=ALL_ANCHORS, route=localhost:9304
+  output = src_name=EST_POS_REPORT, dest_name=ALL_EST_POSES, route=localhost:9301
+  output = src_name=EST_POS_REPORT, dest_name=ALL_EST_POSES, route=localhost:9302
+  output = src_name=EST_POS_REPORT, dest_name=ALL_EST_POSES, route=localhost:9303
+  output = src_name=EST_POS_REPORT, dest_name=ALL_EST_POSES, route=localhost:9304
 
   // Relay anchor exact positions
   output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9301

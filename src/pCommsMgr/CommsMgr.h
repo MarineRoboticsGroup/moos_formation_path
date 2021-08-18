@@ -34,12 +34,12 @@ class CommsMgr : public AppCastingMOOSApp
     int max_bits_per_min; //TODO: Incorporate
     int num_agents;
     string self_name;
-    bool is_anchor;
 
   private: // State variables
-    vector<double> self_pos; //{x, y, time}
+    vector<double> self_gnd_pos; //{x, y, time}
+    vector<double> self_est_pos; //{x, y, time}
     map<string, vector<double>> self_to_agent_range;
-    map<string, vector<double>> anchor_to_pos; //agent4, {x, y, time}
+    map<string, vector<double>> name_to_pos; //agent4, {x, y, time}
 
     // Names are alphabetized
     map<vector<string>, vector<double>> agent_to_agent_range; //{"agent1", "agent2"}, {dist, time}

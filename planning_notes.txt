@@ -1,21 +1,25 @@
 LCGP:
     Taken care of with range_only... & pTrajToWaypoints
-    TODO: need to coordinate timing of reaching waypoints?
+    TODO: may need to coordinate timing of reaching waypoints?
 
 Solo Range measurements:
     pCommsMgr gets ranges X
 
 Sharing range measurements / GPS:
     pCommsMgr currently handles:
-        local exact pos for anchors / self 'INTERNAL_POS_REPORT'
+        local est pos for all other agents 'INTERNAL_POS_REPORT'
         local ranges for all 'INTERNAL_RANGE_REPORT'
-        global pos for anchors 'AGENT_RANGE_REPORT'
-        global ranges for all 'ANCHOR_REPORT'
+        local exact pos for self 'INTERNAL_GND_SELF_REPORT'
+        local est pos for self 'INTERNAL_EST_SELF_REPORT'
+
+        global ranges for all 'AGENT_RANGE_REPORT'
+        global est pos for all 'EST_POS_REPORT'
 
 Localization:
-    TODO: pLocalize
-        Spring solver for first iteration
-        Zelazo for second iteration
+    pLocalize
+        Zelazo X - had to use tweaked eq. because the given one
+            flew off to inf (problem relating to squared components)
+        TODO: More robust test with inaccurate ranges, etc.
 
 Potential Field Planner:
     TODO: verify that waypoint bhv satisfies simple 'go to waypoint'

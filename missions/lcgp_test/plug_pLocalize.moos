@@ -1,11 +1,12 @@
 //--------------------------------------------------------
 // pCommsMgr Configuration Block (Created from Plugin)
 
-ProcessConfig = pCommsMgr
+ProcessConfig = pLocalize
 {
   AppTick   = 2
   CommsTick = 2
 
   NAME = $(VNAME)
-  MAX_RATE = 1000
+  START_POS = $(START_POS)
+  NUM_AGENTS = 4
 }
