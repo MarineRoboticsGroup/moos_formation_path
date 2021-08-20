@@ -39,7 +39,6 @@ class Localize : public AppCastingMOOSApp
     vector<double> self_gnd_pos;
     map<string, vector<double>> neighbor_ranges;
     map<string, vector<double>> all_est_poses;
-    double last_iterate_time;
 };
 
 #endif

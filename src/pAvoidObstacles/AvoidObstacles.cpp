@@ -6,18 +6,19 @@
 /************************************************************/
 
 #include <iterator>
+#include <chrono>
 #include "MBUtils.h"
 #include "ACTable.h"
 #include "AvoidObstacles.h"
 
 using namespace std;
+using namespace std::chrono;
 
 //---------------------------------------------------------
 // Constructor
 
 AvoidObstacles::AvoidObstacles()
 {
-  self_pos = {0.0, 0.0, 0.0};
 }
 
 //---------------------------------------------------------
@@ -120,7 +121,7 @@ bool AvoidObstacles::Iterate()
 {
   AppCastingMOOSApp::Iterate();
   vector<double> forces = {0.0, 0.0};
-  if (all_obstacles.size() > 0 && self_pos[2] != 0.0)
+  if (all_obstacles.size() > 0)
   {
     for (const auto &pair : all_obstacles)
     {
@@ -152,8 +153,8 @@ bool AvoidObstacles::Iterate()
         dist = .01;
       }
 
-      forces[0] -= dy / pow(dist, 2);
-      forces[1] -= dx / pow(dist, 2);
+      forces[0] -= dx / pow(dist, 2);
+      forces[1] -= dy / pow(dist, 2);
     }
 
     forces[0] /= all_obstacles.size();
@@ -193,6 +194,21 @@ bool AvoidObstacles::OnStartUp()
     if (param == "name")
     {
       self_name = value;
+      handled = true;
+    }
+    else if (param == "start_pos")
+    {
+      //"11,-123" - split & add timestamp
+      double comma_index = value.find(',');
+      double x = stod(value.substr(0, comma_index));
+      double y = stod(value.substr(comma_index + 1, value.size()));
+
+      milliseconds ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+      string str_ms = to_string(ms.count());
+      double usable_time = stod(str_ms);
+      usable_time /= 100;
+
+      self_pos = {x, y, usable_time};
       handled = true;
     }
 

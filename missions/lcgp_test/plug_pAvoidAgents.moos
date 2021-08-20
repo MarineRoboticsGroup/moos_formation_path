@@ -1,11 +1,12 @@
 //--------------------------------------------------------
-// pAvoidObstacles Configuration Block (Created from Plugin)
+// pAvoidAgents Configuration Block (Created from Plugin)
 
-ProcessConfig = pAvoidObstacles
+ProcessConfig = pAvoidAgents
 {
   AppTick   = 2
   CommsTick = 2
 
   NAME = $(VNAME)
   START_POS = $(START_POS)
+  NUM_AGENTS = 4
 }

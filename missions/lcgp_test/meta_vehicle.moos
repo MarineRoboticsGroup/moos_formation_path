@@ -27,9 +27,11 @@ ProcessConfig = ANTLER
   Run = pObstacleMgr       @ NewConsole = false
 
   Run = pContactMgrV20     @ NewConsole = false
+
   Run = pCommsMgr          @ NewConsole = false
-  Run = pAvoidObstacles    @ NewConsole = false
   Run = pLocalize          @ NewConsole = false
+  Run = pAvoidAgents       @ NewConsole = false
+  Run = pAvoidObstacles    @ NewConsole = false
 }
 
 #include plug_uFldNodeBroker.moos
@@ -47,6 +49,8 @@ ProcessConfig = ANTLER
 #include plug_pObstacleMgr.moos
 
 #include plug_pContactMgrV20.moos
+
 #include plug_pCommsMgr.moos
-#include plug_pAvoidObstacles.moos
 #include plug_pLocalize.moos
+#include plug_pAvoidAgents.moos
+#include plug_pAvoidObstacles.moos
