@@ -1,3 +1,0 @@
-/home/thumman/Desktop/moos_formation_path/src/pLocalize/build/CMakeFiles/rebuild_cache.dir
-/home/thumman/Desktop/moos_formation_path/src/pLocalize/build/CMakeFiles/edit_cache.dir
-/home/thumman/Desktop/moos_formation_path/src/pLocalize/build/CMakeFiles/pLocalize.dir
