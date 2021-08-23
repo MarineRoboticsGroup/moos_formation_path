@@ -3,6 +3,9 @@
 # Author(s):                              Nicole Thumma
 #--------------------------------------------------------
 
+
+# find_package(Eigen3 REQUIRED)
+
 SET(SRC
   EOptimality.cpp
   EOptimality_Info.cpp
@@ -16,5 +19,6 @@ TARGET_LINK_LIBRARIES(pEOptimality
    apputil
    mbutil
    m
+  #  Eigen3
    pthread)
 

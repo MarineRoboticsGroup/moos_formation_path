@@ -1,7 +1,7 @@
 //--------------------------------------------------------
-// pCommsMgr Configuration Block (Created from Plugin)
+// pEOptimality Configuration Block (Created from Plugin)
 
-ProcessConfig = pLocalize
+ProcessConfig = pEOptimality
 {
   AppTick   = 2
   CommsTick = 2

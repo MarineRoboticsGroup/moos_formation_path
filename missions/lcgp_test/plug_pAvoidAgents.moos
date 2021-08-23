@@ -8,5 +8,5 @@ ProcessConfig = pAvoidAgents
 
   NAME = $(VNAME)
   START_POS = $(START_POS)
-  NUM_AGENTS = 4
+  NUM_AGENTS = 6
 }

@@ -10,6 +10,8 @@
 
 #include "MOOS/libMOOS/Thirdparty/AppCasting/AppCastingMOOSApp.h"
 
+using namespace std;
+
 class EOptimality : public AppCastingMOOSApp
 {
  public:
@@ -21,6 +23,7 @@ class EOptimality : public AppCastingMOOSApp
    bool Iterate();
    bool OnConnectToServer();
    bool OnStartUp();
+   vector<vector<double>> build_fischer_matrix();
 
  protected: // Standard AppCastingMOOSApp function to overload 
    bool buildReport();
@@ -28,9 +31,14 @@ class EOptimality : public AppCastingMOOSApp
  protected:
    void registerVariables();
 
- private: // Configuration variables
+private: // Configuration variables
+  string self_name;
+  int num_agents;
 
- private: // State variables
+private: // State variables
+  vector<double> self_pos;
+  map<string, vector<double>> all_est_poses;
+  vector<vector<double>> fim;
 };
 
 #endif 
