@@ -11,10 +11,11 @@
 #include "MBUtils.h"
 #include "ACTable.h"
 #include "EOptimality.h"
-// #include <Eigen/Eigenvalues>
+#include <Eigen/Eigenvalues>
 
 using namespace std;
 using namespace std::chrono;
+using namespace Eigen;
 
 //---------------------------------------------------------
 // Constructor
@@ -105,18 +106,35 @@ bool EOptimality::Iterate()
 {
   AppCastingMOOSApp::Iterate();
   // First attempt, may be rather slow
-  
-  // Make FIM
+
+  for (int i = 1; i <= 6; i++)
+  {
+    if (all_est_poses.count("agent" + to_string(i)) == 0)
+    {
+      Notify("TEST", "Missing: agent" + to_string(i));
+    }
+  }
+
   if (all_est_poses.size() == num_agents)
   {
-    fim = build_fischer_matrix();
+    Notify("TEST", "IN IF");
+    // Make FIM
+    fim = buildFischerMatrix();
+
+    // Get the min eigenpair
+    vector<vector<double>> min_pair = getMinFIMEigenpair();
+    double lambda = min_pair[0][0];
+    vector<double> v = min_pair[1];
+
+    // Get the gradient from the eigenpair
+    for (int i = 0; i < num_agents; i++)
+    {
+      getPartialDerivOfMatrix(i);
+    }
+
+    // Normalize if need be
   }
-  // (Get all the eigenpairs)
 
-
-  // Get the min eigenpair
-  // Get the gradient from the eigenpair
-  // Normalize if need be
   AppCastingMOOSApp::PostReport();
   return (true);
 }
@@ -208,18 +226,25 @@ bool EOptimality::buildReport()
   return (true);
 }
 
-vector<vector<double>> EOptimality::build_fischer_matrix()
+//#############################################################################
+//    Everything after this point is a translation of math_utils.py           #
+//    in the MarineRoboticsGroup/lcgp repo                                    #
+//                                                                            #
+//#############################################################################
+
+//---------------------------------------------------------
+// Procedure: buildFischerMatrix()
+//            updates fischer information matrix based on agent positions
+
+vector<vector<double>> EOptimality::buildFischerMatrix()
 {
   int num_var_agents = num_agents - 3;
-  Notify("TEST", "START FIM");
   vector<vector<double>> K(num_var_agents * 2, vector<double>(num_var_agents * 2, 0.0));
 
   for (int i = 0; i < num_agents; i++)
   {
     string name1 = "agent" + to_string(i + 1);
     vector<double> node_i = all_est_poses[name1];
-
-    Notify("TEST", name1 + ": (" + to_string(node_i[0]) + ", " + to_string(node_i[1]) + ")");
   }
 
   // Names / accesses
@@ -277,16 +302,136 @@ vector<vector<double>> EOptimality::build_fischer_matrix()
       }
     }
   }
+  return K;
+}
 
-  for (int i = 0; i < fim.size(); i++)
+//---------------------------------------------------------
+// Procedure: getMinFIMEigenpair()
+//            returns minimum eigenvalue and
+//            corresponding vector from the FIM
+
+vector<vector<double>> EOptimality::getMinFIMEigenpair()
+{
+  Notify("TEST", "IN GET MIN EIGENPAIR");
+  // Build matrix using fim
+  int side_length = fim.size();
+  MatrixXf m(side_length, side_length);
+  for (int i = 0; i < side_length; i++)
   {
-    string k_line = "";
-    for (int j = 0; j < fim.size(); j++)
+    for (int j = 0; j < side_length; j++)
     {
-      k_line += "(" + to_string(fim[i][j]) + ")";
+      m(i, j) = fim[i][j];
     }
-    Notify("TEST", k_line);
   }
 
-  return K;
+  // Solver matrix & get results
+  SelfAdjointEigenSolver<MatrixXf> es;
+  es.compute(m);
+  double lambda = es.eigenvalues()[0];
+  VectorXd eigen_v = es.eigenvectors().col(0).cast<double>();
+
+  // Format result and return
+  vector<double> v;
+  for (int i = 0; i < eigen_v.size(); i++)
+  {
+    v.push_back(double(eigen_v[i]));
+  }
+  vector<vector<double>> output{
+      {lambda},
+      v};
+  return output;
+}
+
+// Procedure: getGradientOfEigenpair()
+//            returns the gradient of the eigenvalue corresponding to the eigvec and FIM
+
+vector<double> EOptimality::getGradientOfFIMEigenpair(double lambda, vector<double> v)
+{
+  int side_length = fim.size();
+  vector<double> grad(side_length, 0.); // Init w/ fim.size()
+
+  for (int i = 0; i < side_length; i++)
+  {
+    ;
+    // vector<vector<double>> a = getPartialDerivOfMatrix(i);
+    // grad[index] quadratic mult of eigvec & a
+  }
+  // grad /= norm(grad, 2);
+  return grad;
+}
+
+vector<vector<double>> EOptimality::getPartialDerivOfMatrix(int index)
+{
+  int side_length = fim.size();
+  int i = (int)index / 2;
+  vector<vector<double>> a(side_length, vector<double>(side_length, 0.));
+
+  // Get the pos for the agent w/ ID i+1
+  string name_i = "agent" + to_string(i + 1);
+  vector<double> node_i = all_est_poses[name_i];
+
+  for (int j = 0; j < num_agents - 3; j++)
+  {
+    if (i == j)
+    {
+      continue;
+    }
+    // Get the pos for the agent w/ ID j+1
+    string name_j = "agent" + to_string(j + 1);
+    vector<double> node_j = all_est_poses[name_j];
+
+    vector<vector<double>> dFIMii_di(2, vector<double>(2, 0.));
+    vector<vector<double>> dFIMjj_di(2, vector<double>(2, 0.));
+    vector<vector<double>> dFIMij_di(2, vector<double>(2, 0.));
+    vector<vector<double>> dFIMji_di(2, vector<double>(2, 0.));
+
+    if (index % 2 == 0) // x
+    {
+      dFIMii_di[0] = {2 * (node_i[0] - node_j[0]), node_i[1] - node_j[1]};
+      dFIMii_di[1] = {node_i[1] - node_j[1], 0.};
+
+      dFIMij_di[0] = {2 * (node_j[0] - node_i[0]), node_j[1] - node_i[1]};
+      dFIMij_di[1] = {node_j[1] - node_i[1], 0.};
+
+      dFIMjj_di = dFIMii_di;
+      dFIMji_di = dFIMij_di;
+    }
+    else // y
+    {
+      dFIMii_di[0] = {0., node_i[0] - node_j[0]};
+      dFIMii_di[1] = {node_i[0] - node_j[0], 2 * (node_i[1] - node_j[1])};
+
+      dFIMij_di[0] = {0., node_j[0] - node_i[0]};
+      dFIMij_di[1] = {node_j[0] - node_i[0], 2 * (node_j[1] - node_i[1])};
+
+      dFIMjj_di = dFIMii_di;
+      dFIMji_di = dFIMij_di;
+    }
+
+    for (int place = 0; place < 4; place++)
+    {
+      int delta_x = (int)place % 2;
+      int delta_y = (int)place / 2;
+
+      //  FIMii
+      a[2 * i + delta_x][2 * i + delta_y] += dFIMii_di[delta_x][delta_y];
+      //  FIMjj
+      a[2*j + delta_x][2 * j + delta_y] += dFIMjj_di[delta_x][delta_y];
+      //  FIMij
+      a[2*i + delta_x][2 * j + delta_y] += dFIMij_di[delta_x][delta_y];
+      //  FIMji
+      a[2*j + delta_x][2 * i + delta_y] += dFIMji_di[delta_x][delta_y];
+    }
+  }
+  for (int first = 0; first < a.size(); first++)
+  {
+    string message = "";
+    for (int second = 0; second < a.size(); second++)
+    {
+      message += "(" + to_string(a[first][second]) + ")";
+    }
+    Notify("TEST", message);
+  }
+  Notify("TEST", "");
+  return a;
 }

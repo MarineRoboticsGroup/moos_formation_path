@@ -110,8 +110,13 @@ bool Localize::Iterate()
 {
   AppCastingMOOSApp::Iterate();
   // Zelazo update rule
-  // c is last agent
-  // compare anchor name to self_name for running extra steps
+
+  // Get time since last update
+  milliseconds ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+  string str_ms = to_string(ms.count());
+
+  double delta_time = stod(str_ms)/1000 - last_iteration;
+  last_iteration = stod(str_ms)/1000;
 
   // Only update non-anchors, euqation adapted from Zelazo 2015
   if (self_id <= num_agents - 3 && neighbor_ranges.size() == num_agents - 1 && all_est_poses.size() == num_agents - 1)
@@ -131,8 +136,8 @@ bool Localize::Iterate()
       delta_pos[0] += (est_dist - range) * delta_x / est_dist;
       delta_pos[1] += (est_dist - range) * delta_y / est_dist;
     }
-    self_est_pos[0] += delta_pos[0];
-    self_est_pos[1] += delta_pos[1];
+    self_est_pos[0] += delta_pos[0] * delta_time;
+    self_est_pos[1] += delta_pos[1] * delta_time;
   }
   // Use accurate pos for anchors
   else if (self_id > num_agents - 3 && self_gnd_pos.size() == 3)
@@ -194,9 +199,9 @@ bool Localize::OnStartUp()
       milliseconds ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
       string str_ms = to_string(ms.count());
       double usable_time = stod(str_ms);
-      usable_time /= 100;
 
-      self_est_pos = {x, y, usable_time};
+      self_est_pos = {x, y, usable_time/100};
+      last_iteration = usable_time/1000;
     }
     else if (param == "num_agents")
     {

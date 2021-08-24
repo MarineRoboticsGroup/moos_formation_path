@@ -19,6 +19,5 @@ TARGET_LINK_LIBRARIES(pEOptimality
    apputil
    mbutil
    m
-  #  Eigen3
    pthread)
 

@@ -1,14 +1,14 @@
 ##############################################################################
 # FILE:        moos-ivp-extend/README
-# DATE:        2014/01/02
-# DESCRIPTION: Contains important information regarding the moos-ivp-extend
+# DATE:        2021/8/24
+# DESCRIPTION: Contains important information regarding the moos_formation_path
 #              repository.
 ##############################################################################
 
 #=============================================================================
 # Introduction
 #=============================================================================
-The moos-ivp-extend repository contains examples for extending the MOOS-IvP
+This repository contains examples for extending the MOOS-IvP
 Autonomy system. This includes a MOOS application and an IvP behavior.
 
 
@@ -27,6 +27,8 @@ missions         - Directory for mission files
 README           - Contains helpful information - (this file).
 scripts          - Directory for script files
 src              - Directory for source code
+eigen-3.4.0      - Library used rigidity calculations
+format_converters- Directory for any code that performs format conversion
 
 
 #=============================================================================
@@ -69,14 +71,12 @@ specify your gernerator. Use "cmake --help" for a list of generators and
 additional help.
 
 #=============================================================================
-# Environment variables
+# Eigen-3.4.0
 #=============================================================================
-The moos-ivp-extend binaries files should be added to your path to allow them
-to be launched from pAntler. 
-
-In order for generated IvP Behaviors to be recognized by the IvP Helm, you
-should add the library directory to the "IVP_BEHAVIOR_DIRS" environment 
-variable.
+In order to add Eigen to the compiler's path, run the following command:
+$ sudo ln -s /usr/local/include ~[YOUR PATH TO THIS REPOSITORY]/moos_formation_path/eigen-3.4.0/Eigen
+And also add the following line to ~/.bashrc and source before proceeding:
+export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH$ :~/[YOUR PATH TO THIS REPOSITORY]/moos_formation_path/eigen-3.4.0
 
 ##############################################################################
 #                               END of README

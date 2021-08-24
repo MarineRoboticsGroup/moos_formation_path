@@ -23,7 +23,10 @@ class EOptimality : public AppCastingMOOSApp
    bool Iterate();
    bool OnConnectToServer();
    bool OnStartUp();
-   vector<vector<double>> build_fischer_matrix();
+   vector<vector<double>> buildFischerMatrix();
+   vector<vector<double>> getMinFIMEigenpair();
+   vector<double> getGradientOfFIMEigenpair(double lambda, vector<double> v);
+   vector<vector<double>> getPartialDerivOfMatrix(int index);
 
  protected: // Standard AppCastingMOOSApp function to overload 
    bool buildReport();

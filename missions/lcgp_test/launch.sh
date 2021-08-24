@@ -112,7 +112,7 @@ nsplug meta_vehicle.moos targ_agent5.moos -f WARP=$TIME_WARP \
    VTYPE="kayak"      SHORE_LISTEN=$SHORE_LISTEN            \
    TRAJ=$TRAJ5
 
-nsplug meta_agent.bhv targ_agent5.bhv -i -f VNAME=$VNAME6  \
+nsplug meta_agent.bhv targ_agent5.bhv -i -f VNAME=$VNAME5  \
     OVNAME=$VNAME5 START_POS=$START_POS5
 
 
