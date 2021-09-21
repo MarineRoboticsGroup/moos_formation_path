@@ -34,6 +34,7 @@ ADD_SUBDIRECTORY(pEOptimality)
 ADD_SUBDIRECTORY(pGenObstacle)
 ADD_SUBDIRECTORY(pLocalize)
 ADD_SUBDIRECTORY(pTrajToWaypoints)
+ADD_SUBDIRECTORY(lib_behaviors-test)
 
 ##############################################################################
 #                           END of CMakeLists.txt

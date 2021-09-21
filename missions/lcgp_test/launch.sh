@@ -122,7 +122,7 @@ nsplug meta_vehicle.moos targ_agent6.moos -f WARP=$TIME_WARP \
    VTYPE="kayak"      SHORE_LISTEN=$SHORE_LISTEN            \
    TRAJ=$TRAJ6
 
-nsplug meta_agent.bhv targ_agent6.bhv -i -f VNAME=$VNAME6  \
+nsplug meta_potential_planner.bhv targ_agent6.bhv -i -f VNAME=$VNAME6  \
     OVNAME=$VNAME6 START_POS=$START_POS6
 
 
