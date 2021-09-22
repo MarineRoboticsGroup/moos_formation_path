@@ -32,10 +32,12 @@ protected: // Local Utility functions
 
 protected: // Configuration parameters
   vector<string> force_names;
+  string given_name;
 
 protected: // State variables
   map<string, vector<double>> forces;
   map<string, double> headings;
+  map<string, double> weights;
 };
 
 #define IVP_EXPORT_FUNCTION

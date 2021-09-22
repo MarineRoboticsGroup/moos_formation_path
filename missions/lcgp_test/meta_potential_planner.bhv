@@ -28,7 +28,7 @@ set MODE = TRAJECTORY {
 Behavior = BHV_Waypoint
 {
   name      = traj_waypoints
-  pwt       = 100
+  pwt       = 0
   condition = MODE==TRAJECTORY
   perpetual = true
   updates   = TRAJ_WAYPOINTS
@@ -40,8 +40,56 @@ Behavior = BHV_Waypoint
 //-----------------------------------------------
 Behavior=BHV_PotentialPlanner
 {
-  name       = potential
+  name       = waypoints
   pwt        = 100
+  condition = MODE==TRAJECTORY
+  given_name = WAYPOINT_FORCE
+}
+
+// //-----------------------------------------------
+// Behavior=BHV_PotentialPlanner
+// {
+//   name       = avoid_agents
+//   pwt        = 100
+//   condition = MODE==TRAJECTORY
+//   given_name = AGENT_FORCE
+// }
+// 
+// //-----------------------------------------------
+// Behavior=BHV_PotentialPlanner
+// {
+//   name       = avoid_obstacles
+//   pwt        = 100
+//   condition = MODE==TRAJECTORY
+//   given_name = OBSTACLE_FORCE
+// }
+
+// //-----------------------------------------------
+// Behavior=BHV_PotentialPlanner
+// {
+//   name       = eoptimality
+//   pwt        = 100
+//   condition = MODE==TRAJECTORY
+//   given_name = EOPTIMALITY_FORCE
+// }
+
+Behavior=BHV_ConstantSpeed
+{
+   // General Behavior Parameters
+   // ---------------------------
+   name         = const_spd
+   pwt          = 100              
+   condition    = MODE==TRAJECTORY
+   updates      = CONST_SPD_UPDATES
+
+   // Parameters specific to this behavior
+   // ------------------------------------
+            basewidth = 0.2          // default
+             duration = no-time-limit // default
+                speed = 2.5          // default
+   speed_mismatch_var = SPEED_DIFF   // example
+            peakwidth = 0            // default
+          summitdelta = 0            // default
 }
 
 // Timer for range pings

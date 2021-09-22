@@ -24,7 +24,7 @@ BHV_PotentialPlanner::BHV_PotentialPlanner(IvPDomain domain) : IvPBehavior(domai
   IvPBehavior::setParam("name", "defaultname");
 
   // Declare the behavior decision space
-  m_domain = subDomain(m_domain, "course,speed");
+  m_domain = subDomain(m_domain, "course");
 
   // Add any variables this behavior needs to subscribe for
   // addInfoVars("NAV_X, NAV_Y");
@@ -35,7 +35,8 @@ BHV_PotentialPlanner::BHV_PotentialPlanner(IvPDomain domain) : IvPBehavior(domai
   {
     addInfoVars(force_names[i], "no_warning");
     forces[force_names[i]] = {0.0, 0.0};
-    headings[force_names[1]] = 0.0;
+    headings[force_names[i]] = 0.0;
+    weights[force_names[i]] = 0.0;
   }
 }
 
@@ -47,18 +48,10 @@ bool BHV_PotentialPlanner::setParam(string param, string val)
   // Convert the parameter to lower case for more general matching
   param = tolower(param);
 
-  // Get the numerical value of the param argument for convenience once
-  double double_val = atof(val.c_str());
-
-  //TODO: Add ability to do relative weighting, including 0.0 weight
-  if ((param == "foo") && isNumber(val))
+  if (param == "given_name")
   {
-    // Set local member variables here
+    given_name = val;
     return (true);
-  }
-  else if (param == "bar")
-  {
-    // return(setBooleanOnString(m_my_bool, val));
   }
 
   // If not handled above, then just return false;
@@ -129,6 +122,7 @@ void BHV_PotentialPlanner::onRunToIdleState()
 
 IvPFunction *BHV_PotentialPlanner::onRunState()
 {
+
   // Update values
   string val, x_val, y_val;
 
@@ -141,30 +135,29 @@ IvPFunction *BHV_PotentialPlanner::onRunState()
       y_val = val.substr(val.find(" "), val.find(")"));
       forces[force_names[i]][0] = stod(x_val);
       forces[force_names[i]][1] = stod(y_val);
-      headings[force_names[i]] = atan2(stod(y_val), stod(x_val));
+
+      // Convert from right is 0 & counterclockwise to north is 0 and clockwise
+      double angle_right_oriented = atan2(stod(y_val), stod(x_val)) * 180 / M_PI;
+      headings[force_names[i]] = -(angle_right_oriented) + 90.0;
     }
   }
 
-  // Part 1: Build the IvP function
-  if (headings["OBSTACLE_FORCE"] > .01) {
-    IvPFunction *ipf = 0;
-    ipf = buildFunctionWithZAIC();
-    if (ipf == 0)
-      postWMessage("Problem Creating the IvP Function");
+  IvPFunction *ipf = 0;
+  ipf = buildFunctionWithZAIC();
+  if (ipf == 0)
+    postWMessage("Problem Creating the IvP Function");
 
-    if (ipf)
-      ipf->setPWT(m_priority_wt);
+  if (ipf)
+    ipf->setPWT(m_priority_wt);
 
-    return (ipf);
-  }
-  return 0;
+  return (ipf);
 }
 
 IvPFunction *BHV_PotentialPlanner::buildFunctionWithZAIC()
 {
 
   ZAIC_PEAK crs_zaic(m_domain, "course");
-  crs_zaic.setSummit(headings["OBSTACLE_FORCE"]);
+  crs_zaic.setSummit(headings[given_name]);
   crs_zaic.setPeakWidth(0);
   crs_zaic.setBaseWidth(180.0);
   crs_zaic.setSummitDelta(0);

@@ -1,0 +1,8 @@
+//--------------------------------------------------------
+// pWaypoints Configuration Block (Created from Plugin)
+
+ProcessConfig = pWaypoints
+{
+  AppTick   = 10
+  CommsTick = 10
+}

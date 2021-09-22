@@ -1,44 +1,39 @@
 /************************************************************/
 /*    NAME: Nicole Thumma                                              */
 /*    ORGN: MIT, Cambridge MA                               */
-/*    FILE: TrajToWaypoints.cpp                                        */
+/*    FILE: Waypoints.cpp                                        */
 /*    DATE: December 29th, 1963                             */
 /************************************************************/
 
 #include <iterator>
 #include "MBUtils.h"
 #include "ACTable.h"
-#include "TrajToWaypoints.h"
-#include "XYSegList.h"
+#include "Waypoints.h"
 
 using namespace std;
 
 //---------------------------------------------------------
 // Constructor
 
-TrajToWaypoints::TrajToWaypoints()
+Waypoints::Waypoints()
 {
-  waypoints = {};
-  visit_radius = 5.0;
-
-  dist_to_waypoint = 0.0;
-  current_index = 0;
-  update_pt = "";
-
-  no_posts = true;
+  nav_x = 0.0;
+  nav_y = 0.0;
+  waypoint_x = 0.0;
+  waypoint_y = 0.0;
 }
 
 //---------------------------------------------------------
 // Destructor
 
-TrajToWaypoints::~TrajToWaypoints()
+Waypoints::~Waypoints()
 {
 }
 
 //---------------------------------------------------------
 // Procedure: OnNewMail
 
-bool TrajToWaypoints::OnNewMail(MOOSMSG_LIST &NewMail)
+bool Waypoints::OnNewMail(MOOSMSG_LIST &NewMail)
 {
   AppCastingMOOSApp::OnNewMail(NewMail);
 
@@ -57,6 +52,7 @@ bool TrajToWaypoints::OnNewMail(MOOSMSG_LIST &NewMail)
     bool   mdbl  = msg.IsDouble();
     bool   mstr  = msg.IsString();
 #endif
+
     if (key == "NAV_X")
     {
       nav_x = msg.GetDouble();
@@ -65,6 +61,13 @@ bool TrajToWaypoints::OnNewMail(MOOSMSG_LIST &NewMail)
     {
       nav_y = msg.GetDouble();
     }
+    else if (key == "CURRENT_WAYPOINT")
+    {
+      string val = msg.GetString();
+      waypoint_x = stod(val.substr(1, val.find(",")));
+      waypoint_y = stod(val.substr(val.find(" "), val.find(")")));
+    }
+
     else if (key != "APPCAST_REQ") // handled by AppCastingMOOSApp
       reportRunWarning("Unhandled Mail: " + key);
   }
@@ -75,7 +78,7 @@ bool TrajToWaypoints::OnNewMail(MOOSMSG_LIST &NewMail)
 //---------------------------------------------------------
 // Procedure: OnConnectToServer
 
-bool TrajToWaypoints::OnConnectToServer()
+bool Waypoints::OnConnectToServer()
 {
   registerVariables();
   return (true);
@@ -85,49 +88,13 @@ bool TrajToWaypoints::OnConnectToServer()
 // Procedure: Iterate()
 //            happens AppTick times per second
 
-bool TrajToWaypoints::Iterate()
+bool Waypoints::Iterate()
 {
   AppCastingMOOSApp::Iterate();
-  XYSegList my_seglist;
-
-  // First waypoint
-  if (no_posts)
-  {
-    my_seglist.add_vertex(waypoints[current_index][0], waypoints[current_index][1]);
-    update_pt = "points = " + my_seglist.get_spec();
-    Notify("TRAJ_WAYPOINTS", update_pt);
-    Notify("CURRENT_WAYPOINT", "(" + to_string(waypoints[current_index][0]) + ", " + to_string(waypoints[current_index][0]) + ")");
-
-    no_posts = false;
-
-    // Visualize endgoal
-    vector<double> goal_coords = waypoints.back();
-    Notify("VIEW_MARKER", "type=circle,x=" + to_string(goal_coords[0]) + ",y=" + to_string(goal_coords[1]) + ",label=goal,color=green,width=" + to_string(visit_radius));
-  }
-  else
-  {
-    dist_to_waypoint = pow(pow(nav_x - waypoints[current_index][0], 2) + pow(nav_y - waypoints[current_index][1], 2), .5);
-    // Check if at waypoint
-    if (dist_to_waypoint < visit_radius)
-    {
-      // Go to next waypoint
-      if (current_index < waypoints.size() - 1)
-      {
-        current_index++;
-        my_seglist.add_vertex(waypoints[current_index][0], waypoints[current_index][1]);
-        update_pt = "points = " + my_seglist.get_spec();
-        Notify("TRAJ_WAYPOINTS", update_pt);
-        Notify("CURRENT_WAYPOINT", "(" + to_string(waypoints[current_index][0]) + ", " + to_string(waypoints[current_index][1]) + ")");
-      }
-      // At goal
-      else
-      {
-        Notify("TRAJ_WAYPOINTS", "endflag = TRAJ = false");
-        Notify("TRAJ_WAYPOINTS", "endflag = STATION_KEEP = true");
-      }
-    }
-  }
-
+  //Distance between current pos and waypoint
+  Notify("TEST", "All values: (" + to_string(waypoint_x) + ", " + to_string(nav_x) + ", " + to_string(waypoint_y) + ", " + to_string(nav_y) + ")");
+  Notify("TEST", "Differences: (" + to_string(waypoint_x - nav_x) + ", " + to_string(waypoint_y - nav_y) + ")");
+  Notify("WAYPOINT_FORCE", "(" + to_string(waypoint_x - nav_x) + ", " + to_string(waypoint_y - nav_y) + ")");
   AppCastingMOOSApp::PostReport();
   return (true);
 }
@@ -136,7 +103,7 @@ bool TrajToWaypoints::Iterate()
 // Procedure: OnStartUp()
 //            happens before connection is open
 
-bool TrajToWaypoints::OnStartUp()
+bool Waypoints::OnStartUp()
 {
   AppCastingMOOSApp::OnStartUp();
 
@@ -153,35 +120,20 @@ bool TrajToWaypoints::OnStartUp()
     string param = tolower(biteStringX(line, '='));
     string value = line;
 
-    if (param == "traj")
+    bool handled = false;
+    if (param == "foo")
     {
-      string traj = value;
-      vector<char> extra_chars = {'(', ')', '[', ']', ' '};
-      for (int i = 0; i < extra_chars.size(); i++)
-      {
-        traj.erase(remove(traj.begin(), traj.end(), extra_chars[i]), traj.end());
-      }
+      handled = true;
+    }
+    else if (param == "bar")
+    {
+      handled = true;
+    }
 
-      vector<string> str_waypoints = parseString(traj, ',');
-      double traj_x = 0.0;
-      double traj_y = 0.0;
-      for (int i = 0; i < str_waypoints.size(); i += 2)
-      {
-        traj_x = stod(str_waypoints[i]);
-        traj_y = stod(str_waypoints[i + 1]);
-        vector<double> coords = {traj_x, traj_y};
-        waypoints.push_back(coords);
-      }
-    }
-    else if (param == "visit_radius")
-    {
-      visit_radius = stod(value);
-    }
-    else
-    {
+    if (!handled)
       reportUnhandledConfigWarning(orig);
-    }
   }
+
   registerVariables();
   return (true);
 }
@@ -189,28 +141,29 @@ bool TrajToWaypoints::OnStartUp()
 //---------------------------------------------------------
 // Procedure: registerVariables
 
-void TrajToWaypoints::registerVariables()
+void Waypoints::registerVariables()
 {
   AppCastingMOOSApp::RegisterVariables();
   Register("NAV_X", 0);
   Register("NAV_Y", 0);
+  Register("CURRENT_WAYPOINT", 0);
 }
 
 //------------------------------------------------------------
 // Procedure: buildReport()
 
-bool TrajToWaypoints::buildReport()
+bool Waypoints::buildReport()
 {
   m_msgs << "============================================" << endl;
   m_msgs << "File:                                       " << endl;
   m_msgs << "============================================" << endl;
 
   ACTable actab(4);
-  actab << "Index | Dist | Msg | four";
+  actab << "Alpha | Bravo | Charlie | Delta";
   actab.addHeaderLines();
-  actab << to_string(current_index)
-        << to_string(dist_to_waypoint)
-        << update_pt
+  actab << "one"
+        << "two"
+        << "three"
         << "four";
   m_msgs << actab.getFormattedString();
 

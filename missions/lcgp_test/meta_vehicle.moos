@@ -33,6 +33,7 @@ ProcessConfig = ANTLER
   Run = pAvoidAgents       @ NewConsole = false
   Run = pAvoidObstacles    @ NewConsole = false
   Run = pEOptimality       @ NewConsole = false
+  Run = pWaypoints         @ NewConsole = false
 }
 
 #include plug_uFldNodeBroker.moos
@@ -56,3 +57,4 @@ ProcessConfig = ANTLER
 #include plug_pAvoidAgents.moos
 #include plug_pAvoidObstacles.moos
 #include plug_pEOptimality.moos
+#include plug_pWaypoints.moos
