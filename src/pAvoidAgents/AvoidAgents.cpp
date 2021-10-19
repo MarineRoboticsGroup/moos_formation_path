@@ -102,7 +102,7 @@ bool AvoidAgents::Iterate()
 {
   AppCastingMOOSApp::Iterate();
   vector<double> forces = {0.0, 0.0};
-  // TODO: Later implement robot size
+  vector<double> individual_forces = {};
 
   if (all_est_poses.size() == num_agents-1)
   {
@@ -115,6 +115,10 @@ bool AvoidAgents::Iterate()
       double dist = sqrt(dx * dx + dy * dy);
       forces[0] -= dx / pow(dist, 3);
       forces[1] -= dy / pow(dist, 3);
+
+      // Individual forces
+      individual_forces.push_back(-dx / pow(dist, 3));
+      individual_forces.push_back(-dy / pow(dist, 3));
     }
     forces[0] /= num_agents;
     forces[1] /= num_agents;
@@ -122,6 +126,13 @@ bool AvoidAgents::Iterate()
     // TODO: Implement normalization if needed
 
     Notify("AGENT_FORCE", "(" + to_string(forces[0]) + ", " + to_string(forces[1]) + ")");
+
+    // Individual
+    string agent_msg = "";
+    for (int i = 0; i < individual_forces.size(); i+=2) {
+      agent_msg += "(" + to_string(individual_forces[i]) + ", " + to_string(individual_forces[i+1]) + ")";
+    }
+    Notify("INDIVIDUAL_AGENT_FORCES", agent_msg);
   }
   AppCastingMOOSApp::PostReport();
   return (true);

@@ -43,35 +43,12 @@ Behavior=BHV_PotentialPlanner
   name       = waypoints
   pwt        = 100
   condition = MODE==TRAJECTORY
-  given_name = WAYPOINT_FORCE
+  waypoint_weight = 10.0
+  avoid_agent_weight = 0.0
+  avoid_obstacle_weight = 0.0
+  eoptimality_weight = 8.0
 }
 
-// //-----------------------------------------------
-// Behavior=BHV_PotentialPlanner
-// {
-//   name       = avoid_agents
-//   pwt        = 100
-//   condition = MODE==TRAJECTORY
-//   given_name = AGENT_FORCE
-// }
-// 
-// //-----------------------------------------------
-// Behavior=BHV_PotentialPlanner
-// {
-//   name       = avoid_obstacles
-//   pwt        = 100
-//   condition = MODE==TRAJECTORY
-//   given_name = OBSTACLE_FORCE
-// }
-
-// //-----------------------------------------------
-// Behavior=BHV_PotentialPlanner
-// {
-//   name       = eoptimality
-//   pwt        = 100
-//   condition = MODE==TRAJECTORY
-//   given_name = EOPTIMALITY_FORCE
-// }
 
 Behavior=BHV_ConstantSpeed
 {

@@ -108,20 +108,8 @@ bool EOptimality::Iterate()
 
   if (all_est_poses.size() == num_agents)
   {
-    Notify("TEST", "IN IF");
     // Make FIM
     fim = buildFischerMatrix();
-
-    Notify("TEST", "FIM");
-    for (int i = 0; i < fim.size(); i++)
-    {
-      string fim_msg = "";
-      for (int j = 0; j < fim.size(); j++)
-      {
-        fim_msg += to_string(fim[i][j]) + ", ";
-      }
-      Notify("TEST", fim_msg);
-    }
 
     // Get the min eigenpair
     vector<vector<double>> min_pair = getMinFIMEigenpair();
@@ -133,14 +121,16 @@ bool EOptimality::Iterate()
     {
       line += to_string(v[i]) + ", ";
     }
-    Notify("TEST", "Lambda: " + to_string(lambda));
-    Notify("TEST", "Vector: " + line);
-    Notify("TEST", "");
 
     // Get the gradient from the eigenpair
     vector<double> grad = getGradientOfFIMEigenpair(lambda, v);
 
-    // Normalize if need be
+    int self_id = stoi(self_name.substr(5));
+    // Notify("TEST", to_string(self_id) + self_name);
+    if (self_id <= num_agents - 3)
+    {
+      Notify("EOPTIMALITY_FORCE", "(" + to_string(grad[2*self_id]) + ", " + to_string(grad[2*self_id + 1]) + ")");
+    }
   }
 
   AppCastingMOOSApp::PostReport();
@@ -265,7 +255,6 @@ vector<vector<double>> EOptimality::buildFischerMatrix()
     {
       string name2 = "agent" + to_string(j + 1);
       vector<double> node_j = all_est_poses[name2];
-
       // The mathy part
       double diff_x = node_i[0] - node_j[0];
       double diff_y = node_i[1] - node_j[1];
@@ -277,36 +266,40 @@ vector<vector<double>> EOptimality::buildFischerMatrix()
       double delY2 = diff_y * diff_y / denom;
       double delXY = diff_x * diff_y / denom;
 
+      // TODO: rename new_i to i and new_j to j
+      int new_i = i - 3;
+      int new_j = j - 3;
+
       // Blocks
-      if (i < num_var_agents)
+      if (0 <= new_i)
       {
         // Block ii
-        K[2 * i][2 * i] += delX2;
-        K[2 * i + 1][2 * i + 1] += delY2;
-        K[2 * i][2 * i + 1] += delXY;
-        K[2 * i + 1][2 * i] += delXY;
+        K[2 * new_i][2 * new_i] += delX2;
+        K[2 * new_i + 1][2 * new_i + 1] += delY2;
+        K[2 * new_i][2 * new_i + 1] += delXY;
+        K[2 * new_i + 1][2 * new_i] += delXY;
       }
-      if (j < num_var_agents)
+      if (0 <= new_j)
       {
         // Block jj
-        K[2 * j][2 * j] += delX2;
-        K[2 * j + 1][2 * j + 1] += delY2;
-        K[2 * j][2 * j + 1] += delXY;
-        K[2 * j + 1][2 * j] += delXY;
+        K[2 * new_j][2 * new_j] += delX2;
+        K[2 * new_j + 1][2 * new_j + 1] += delY2;
+        K[2 * new_j][2 * new_j + 1] += delXY;
+        K[2 * new_j + 1][2 * new_j] += delXY;
       }
-      if (i < num_var_agents && j < num_var_agents)
+      if (0 <= new_i && 0 <= new_j)
       {
         // Block ij
-        K[2 * i][2 * j] = -delX2;
-        K[2 * i + 1][2 * j + 1] = -delY2;
-        K[2 * i][2 * j + 1] = -delXY;
-        K[2 * i + 1][2 * j] = -delXY;
+        K[2 * new_i][2 * new_j] = -delX2;
+        K[2 * new_i + 1][2 * new_j + 1] = -delY2;
+        K[2 * new_i][2 * new_j + 1] = -delXY;
+        K[2 * new_i + 1][2 * new_j] = -delXY;
 
         // Block ji
-        K[2 * j][2 * i] = -delX2;
-        K[2 * j + 1][2 * i + 1] = -delY2;
-        K[2 * j][2 * i + 1] = -delXY;
-        K[2 * j + 1][2 * i] = -delXY;
+        K[2 * new_j][2 * new_i] = -delX2;
+        K[2 * new_j + 1][2 * new_i + 1] = -delY2;
+        K[2 * new_j][2 * new_i + 1] = -delXY;
+        K[2 * new_j + 1][2 * new_i] = -delXY;
       }
     }
   }
@@ -339,7 +332,6 @@ vector<vector<double>> EOptimality::getMinFIMEigenpair()
   {
     line += to_string(es.eigenvalues()[i]) + ", ";
   }
-  Notify("TEST", "All eigenvalues: " + line);
 
   double lambda = es.eigenvalues()[0];
   VectorXd eigen_v = es.eigenvectors().col(0).cast<double>();
@@ -386,18 +378,16 @@ vector<double> EOptimality::getGradientOfFIMEigenpair(double lambda, vector<doub
 
     grad(agent_num) = v.transpose() * A * v;
   }
-  double norm_squared = grad.squaredNorm();
   double norm = grad.norm();
 
   string line = "";
+  vector<double> out(side_length);
   for (int i = 0; i < grad.size(); i++)
   {
-    line += to_string(grad(i)) + ", ";
+    line += to_string(grad(i) / norm) + ", ";
+    out[i] = grad(i) / norm;
   }
-  Notify("TEST", "Grad: " + line);
 
-  Notify("TEST", "Squared: " + to_string(norm_squared) + ", Norm: " + to_string(norm));
-  vector<double> out(side_length);
   return out;
 }
 

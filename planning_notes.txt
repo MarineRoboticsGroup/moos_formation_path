@@ -1,6 +1,6 @@
 LCGP:
     Taken care of with range_only... & pTrajToWaypoints
-    TODO: may need to coordinate timing of reaching waypoints?
+    TODO: may need to coordinate timing of reaching waypoints? - Check results to determine this
 
 Solo Range measurements:
     pCommsMgr gets ranges X
@@ -19,15 +19,16 @@ Localization:
     pLocalize
         Zelazo X - had to use tweaked eq. because the given one
             flew off to inf (problem relating to squared components)
-        TODO: More robust test with inaccurate ranges, etc.
 
 Potential Field Planner:
-    TODO: verify that waypoint bhv satisfies simple 'go to waypoint'
+    verify that waypoint bhv satisfies simple 'go to waypoint' X
     all agents contact each other - handled with pCommsMgr
-    TODO: pAvoidAgents
-    pAvoidObstacles - Implemented, have yet to connect to bhv
-    TODO: E Optimality
-    TODO: Combine in a behavior
+    pAvoidAgents X
+    pAvoidObstacles X
+    E Optimality X - check results to verify correct performance
+    Combine in a behavior - basic version exists TODO: incorporate speed
 
 Post Processing:
     TODO - figure out what's needed & implement
+    TODO - make python script that gets (x,y) postions from alog file and trims the beginning
+         - As part of this, make sure the output is the expected input for the existing analysis tools

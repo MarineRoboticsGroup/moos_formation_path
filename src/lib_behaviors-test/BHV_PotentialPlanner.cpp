@@ -38,6 +38,7 @@ BHV_PotentialPlanner::BHV_PotentialPlanner(IvPDomain domain) : IvPBehavior(domai
     headings[force_names[i]] = 0.0;
     weights[force_names[i]] = 0.0;
   }
+
 }
 
 //---------------------------------------------------------------
@@ -48,9 +49,27 @@ bool BHV_PotentialPlanner::setParam(string param, string val)
   // Convert the parameter to lower case for more general matching
   param = tolower(param);
 
-  if (param == "given_name")
+  // convert value to double
+  double double_val = atof(val.c_str());
+
+  if (param == "waypoint_weight")
   {
-    given_name = val;
+    weights["WAYPOINT_FORCE"] = double_val;
+    return (true);
+  }
+  else if (param == "avoid_agent_weight")
+  {
+    weights["AGENT_FORCE"] = double_val;
+    return (true);
+  }
+  else if (param == "avoid_obstacle_weight")
+  {
+    weights["OBSTACLE_FORCE"] = double_val;
+    return (true);
+  }
+  else if (param == "eoptimality_weight")
+  {
+    weights["EOPTIMALITY_FORCE"] = double_val;
     return (true);
   }
 
@@ -157,10 +176,33 @@ IvPFunction *BHV_PotentialPlanner::buildFunctionWithZAIC()
 {
 
   ZAIC_PEAK crs_zaic(m_domain, "course");
-  crs_zaic.setSummit(headings[given_name]);
-  crs_zaic.setPeakWidth(0);
-  crs_zaic.setBaseWidth(180.0);
-  crs_zaic.setSummitDelta(0);
+
+  // overall minutil = 0, maxutil = 100
+
+  int index = 0;
+  bool first_only = true;
+  for (int i = 0; i < headings.size(); i++)
+  {
+    if (weights[force_names[i]] > 0.5)
+    {
+      if (!first_only)
+      {
+        index = crs_zaic.addComponent();
+      }
+      postMessage("TEST", "Inside for: " + force_names[i]);
+      postMessage("TEST", "heading: " + to_string(headings[force_names[i]]));
+      double summit = headings[force_names[i]];
+      double peakwidth = 1.0;
+      double basewidth = 180.0;
+      double summitdelta = 0.1;
+      double minutil = 0.0;
+      double maxutil = weights[force_names[i]]; //TODO: Multiply with length of vector?
+      crs_zaic.setParams(summit, peakwidth, basewidth, summitdelta, minutil, maxutil, index);
+
+      first_only = false;
+    }
+  }
+
   crs_zaic.setValueWrap(true);
   if (crs_zaic.stateOK() == false)
   {

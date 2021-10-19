@@ -92,8 +92,8 @@ bool Waypoints::Iterate()
 {
   AppCastingMOOSApp::Iterate();
   //Distance between current pos and waypoint
-  Notify("TEST", "All values: (" + to_string(waypoint_x) + ", " + to_string(nav_x) + ", " + to_string(waypoint_y) + ", " + to_string(nav_y) + ")");
-  Notify("TEST", "Differences: (" + to_string(waypoint_x - nav_x) + ", " + to_string(waypoint_y - nav_y) + ")");
+  // Notify("TEST", "All values: (" + to_string(waypoint_x) + ", " + to_string(nav_x) + ", " + to_string(waypoint_y) + ", " + to_string(nav_y) + ")");
+  // Notify("TEST", "Differences: (" + to_string(waypoint_x - nav_x) + ", " + to_string(waypoint_y - nav_y) + ")");
   Notify("WAYPOINT_FORCE", "(" + to_string(waypoint_x - nav_x) + ", " + to_string(waypoint_y - nav_y) + ")");
   AppCastingMOOSApp::PostReport();
   return (true);
