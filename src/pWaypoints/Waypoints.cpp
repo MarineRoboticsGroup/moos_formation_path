@@ -53,13 +53,21 @@ bool Waypoints::OnNewMail(MOOSMSG_LIST &NewMail)
     bool   mstr  = msg.IsString();
 #endif
 
-    if (key == "NAV_X")
+    // if (key == "NAV_X")
+    // {
+    //   nav_x = msg.GetDouble();
+    // }
+    // else if (key == "NAV_Y")
+    // {
+    //   nav_y = msg.GetDouble();
+    // }
+    if (key == "INTERNAL_EST_SELF_REPORT")
     {
-      nav_x = msg.GetDouble();
-    }
-    else if (key == "NAV_Y")
-    {
-      nav_y = msg.GetDouble();
+      string sval = msg.GetString();
+
+      nav_x = stod(tokStringParse(sval, "X", ',', '='));
+      nav_x = stod(tokStringParse(sval, "Y", ',', '='));
+      // double time = stod(tokStringParse(sval, "TIME", ',', '='));
     }
     else if (key == "CURRENT_WAYPOINT")
     {
@@ -144,8 +152,9 @@ bool Waypoints::OnStartUp()
 void Waypoints::registerVariables()
 {
   AppCastingMOOSApp::RegisterVariables();
-  Register("NAV_X", 0);
-  Register("NAV_Y", 0);
+  // Register("NAV_X", 0);
+  // Register("NAV_Y", 0);
+  Register("INTERNAL_EST_SELF_REPORT", 0);
   Register("CURRENT_WAYPOINT", 0);
 }
 

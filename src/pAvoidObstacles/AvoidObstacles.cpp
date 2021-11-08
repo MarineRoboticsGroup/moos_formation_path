@@ -85,7 +85,7 @@ bool AvoidObstacles::OnNewMail(MOOSMSG_LIST &NewMail)
       all_obstacles[name] = vals;
     }
 
-    else if (key == "INTERNAL_GND_SELF_REPORT")
+    else if (key == "INTERNAL_EST_SELF_REPORT")
     {
       string sval = msg.GetString();
 
@@ -227,7 +227,7 @@ void AvoidObstacles::registerVariables()
 {
   AppCastingMOOSApp::RegisterVariables();
   Register("GIVEN_OBSTACLE", 0);
-  Register("INTERNAL_GND_SELF_REPORT", 0);
+  Register("INTERNAL_EST_SELF_REPORT", 0);
 }
 
 //------------------------------------------------------------
