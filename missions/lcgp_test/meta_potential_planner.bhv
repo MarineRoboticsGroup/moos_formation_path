@@ -24,6 +24,7 @@ set MODE = TRAJECTORY {
   TRAJ = true
 }
 
+// THIS BEHAVIOR IS ONLY TO SHOW THE POINTS, IT DOES NOT CONTROL THE AGENTS
 //----------------------------------------------
 Behavior = BHV_Waypoint
 {
@@ -44,11 +45,10 @@ Behavior=BHV_PotentialPlanner
   pwt        = 100
   condition = MODE==TRAJECTORY
   waypoint_weight = 10.0
-  avoid_agent_weight = 0.0
-  avoid_obstacle_weight = 0.0
+  avoid_agent_weight = 9.9
+  avoid_obstacle_weight = 9.9
   eoptimality_weight = 0.0
 }
-
 
 Behavior=BHV_ConstantSpeed
 {
@@ -61,12 +61,12 @@ Behavior=BHV_ConstantSpeed
 
    // Parameters specific to this behavior
    // ------------------------------------
-            basewidth = 0.2          // default
-             duration = no-time-limit // default
-                speed = 2.5          // default
-   speed_mismatch_var = SPEED_DIFF   // example
-            peakwidth = 0            // default
-          summitdelta = 0            // default
+            basewidth = 0.2
+             duration = no-time-limit
+                speed = 1.0
+   speed_mismatch_var = SPEED_DIFF
+            peakwidth = 0
+          summitdelta = 0
 }
 
 // Timer for range pings
@@ -86,16 +86,18 @@ Behavior=BHV_ConstantSpeed
 //----------------------------------------------
 Behavior = BHV_StationKeep
 {
-  name      = station-keep
-  pwt       = 200
-  condition = MODE==STATION-KEEPING
+  name         = station-keep
+  pwt          = 200
+  condition    = MODE==STATION-KEEPING
   inactiveflag = STATIONING=false
-  activeflag = STATIONING=true
+  activeflag   = STATIONING=true
+  updates      = STATION_UPDATES
 
      center_activate = true
         inner_radius = 1
-        outer_radius = 10 
+        outer_radius = 5
          outer_speed = 1.0
+          station_pt = 0.0,0.0
 
        transit_speed = 1.3
           swing_time = 7

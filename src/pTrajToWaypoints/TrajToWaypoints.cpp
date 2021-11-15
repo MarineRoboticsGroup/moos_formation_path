@@ -19,11 +19,14 @@ using namespace std;
 TrajToWaypoints::TrajToWaypoints()
 {
   waypoints = {};
-  visit_radius = 5.0;
+  visit_radius = 1.0;
 
   dist_to_waypoint = 0.0;
   current_index = 0;
   update_pt = "";
+
+  synced_waypoint = 0;
+  go_to_next = false;
 
   no_posts = true;
 }
@@ -65,6 +68,10 @@ bool TrajToWaypoints::OnNewMail(MOOSMSG_LIST &NewMail)
     {
       nav_y = msg.GetDouble();
     }
+    else if (key == "INTERNAL_WAYPOINT_COUNTER")
+    {
+      synced_waypoint = stoi(msg.GetString());
+    }
     else if (key != "APPCAST_REQ") // handled by AppCastingMOOSApp
       reportRunWarning("Unhandled Mail: " + key);
   }
@@ -97,6 +104,7 @@ bool TrajToWaypoints::Iterate()
     update_pt = "points = " + my_seglist.get_spec();
     Notify("TRAJ_WAYPOINTS", update_pt);
     Notify("CURRENT_WAYPOINT", "(" + to_string(waypoints[current_index][0]) + ", " + to_string(waypoints[current_index][0]) + ")");
+    Notify("CONST_SPD_UPDATES", "speed = 2.5");
 
     no_posts = false;
 
@@ -107,17 +115,28 @@ bool TrajToWaypoints::Iterate()
   else
   {
     dist_to_waypoint = pow(pow(nav_x - waypoints[current_index][0], 2) + pow(nav_y - waypoints[current_index][1], 2), .5);
+
     // Check if at waypoint
-    if (dist_to_waypoint < visit_radius)
+    if (dist_to_waypoint < visit_radius || go_to_next)
     {
+      go_to_next = true;
+
+      Notify("TEST", to_string(synced_waypoint) + ", " + to_string(current_index));
+      // Wait for everyone
+      if (synced_waypoint != current_index) {
+        Notify("CONST_SPD_UPDATES", "speed = 0.0");
+        Notify("INTERNAL_WAYPOINT", to_string(current_index));
+      }
       // Go to next waypoint
-      if (current_index < waypoints.size() - 1)
+      else if (current_index < waypoints.size() - 1)
       {
         current_index++;
         my_seglist.add_vertex(waypoints[current_index][0], waypoints[current_index][1]);
         update_pt = "points = " + my_seglist.get_spec();
         Notify("TRAJ_WAYPOINTS", update_pt);
+        Notify("CONST_SPD_UPDATES", "speed = 2.5");
         Notify("CURRENT_WAYPOINT", "(" + to_string(waypoints[current_index][0]) + ", " + to_string(waypoints[current_index][1]) + ")");
+        go_to_next = false;
       }
       // At goal
       else
@@ -194,6 +213,7 @@ void TrajToWaypoints::registerVariables()
   AppCastingMOOSApp::RegisterVariables();
   Register("NAV_X", 0);
   Register("NAV_Y", 0);
+  Register("INTERNAL_WAYPOINT_COUNTER", 0);
 }
 
 //------------------------------------------------------------

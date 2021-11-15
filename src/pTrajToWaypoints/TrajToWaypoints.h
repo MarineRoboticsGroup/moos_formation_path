@@ -37,6 +37,8 @@ private: // Configuration variables
 private: // State variables
   bool no_posts;
   int current_index;
+  int synced_waypoint;
+  bool go_to_next;
 
   double nav_x;
   double nav_y;

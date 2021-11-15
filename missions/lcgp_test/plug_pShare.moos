@@ -23,5 +23,13 @@ ProcessConfig = pShare
   output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9304
   output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9305
   output = src_name=AGENT_RANGE_REPORT, dest_name=ALL_RANGES, route=localhost:9306
+
+  // Relay most recent completed waypoint
+  output = src_name=WAYPOINT_REPORT, dest_name=ALL_WAYPOINTS, route=localhost:9301
+  output = src_name=WAYPOINT_REPORT, dest_name=ALL_WAYPOINTS, route=localhost:9302
+  output = src_name=WAYPOINT_REPORT, dest_name=ALL_WAYPOINTS, route=localhost:9303
+  output = src_name=WAYPOINT_REPORT, dest_name=ALL_WAYPOINTS, route=localhost:9304
+  output = src_name=WAYPOINT_REPORT, dest_name=ALL_WAYPOINTS, route=localhost:9305
+  output = src_name=WAYPOINT_REPORT, dest_name=ALL_WAYPOINTS, route=localhost:9306
 }
 

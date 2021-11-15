@@ -118,6 +118,20 @@ bool CommsMgr::OnNewMail(MOOSMSG_LIST &NewMail)
       self_est_pos = vals;
     }
 
+    else if (key == "INTERNAL_WAYPOINT")
+    {
+      self_waypoint_index = stoi(msg.GetString());
+      waypoint_index[self_name] = self_waypoint_index;
+    }
+
+    else if (key == "ALL_WAYPOINTS")
+    {
+      string sval = msg.GetString();
+      string name = tokStringParse(sval, "NAME", ',', '=');
+      int index = stoi(tokStringParse(sval, "WAYPOINT_INDEX", ',', '='));
+      waypoint_index[name] = index;
+    }
+
     else if (key != "APPCAST_REQ") // handled by AppCastingMOOSApp
       reportRunWarning("Unhandled Mail: " + key);
   }
@@ -176,6 +190,35 @@ bool CommsMgr::Iterate()
                                  ",TIME=" + to_string(self_gnd_pos[2]);
     Notify("INTERNAL_GND_SELF_REPORT", self_gnd_pos_report);
   }
+  int index = -1;
+  bool all_same = true;
+  string test_msg = "";
+  for (const auto &pair : waypoint_index)
+  {
+    string name = pair.first;
+    int current_index = pair.second;
+    test_msg += "(" + name + ", " + to_string(current_index) + ")";
+    if (index == -1) {
+    index = current_index;
+    }
+    else {
+      if (index != current_index)
+      {
+        all_same = false;
+      }
+    }
+  }
+  if (all_same) {
+    most_recent_waypoint_index = waypoint_index[self_name];
+  }
+
+  Notify("TEST", test_msg);
+
+  if (waypoint_index.size() == num_agents)
+  {
+
+    Notify("INTERNAL_WAYPOINT_COUNTER", to_string(most_recent_waypoint_index));
+  }
 
   // External Comms
   for (const auto &pair : self_to_agent_range)
@@ -207,6 +250,10 @@ bool CommsMgr::Iterate()
                                  ",TIME=" + to_string(self_est_pos[2]);
     Notify("EST_POS_REPORT", self_est_pos_report);
   }
+
+  string self_waypoint_report = "NAME=" + self_name + ",WAYPOINT_INDEX=" + to_string(self_waypoint_index);
+  Notify("WAYPOINT_REPORT", self_waypoint_report);
+
   AppCastingMOOSApp::PostReport();
   return (true);
 }
@@ -273,6 +320,9 @@ void CommsMgr::registerVariables()
   // Gnd and est self pos, respectively
   Register("NODE_REPORT_LOCAL", 0);
   Register("INTERNAL_EST_SELF_REPORT", 0);
+
+  Register("INTERNAL_WAYPOINT", 0);
+  Register("ALL_WAYPOINTS", 0);
 }
 
 //------------------------------------------------------------

@@ -7,5 +7,6 @@ ProcessConfig = pCommsMgr
   CommsTick = 2
 
   NAME = $(VNAME)
+  NUM_AGENTS = 6
   MAX_RATE = 1000
 }

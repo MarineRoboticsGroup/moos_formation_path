@@ -39,7 +39,11 @@ class CommsMgr : public AppCastingMOOSApp
     vector<double> self_gnd_pos; //{x, y, time}
     vector<double> self_est_pos; //{x, y, time}
     map<string, vector<double>> self_to_agent_range;
-    map<string, vector<double>> name_to_pos; //agent4, {x, y, time}
+    map<string, vector<double>> name_to_pos; //agent#, {x, y, time}
+
+    int self_waypoint_index;
+    map<string, int> waypoint_index;
+    int most_recent_waypoint_index;
 
     // Names are alphabetized
     map<vector<string>, vector<double>> agent_to_agent_range; //{"agent1", "agent2"}, {dist, time}

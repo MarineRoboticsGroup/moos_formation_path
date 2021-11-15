@@ -23,7 +23,6 @@ def convert_alog_to_traj():
         print(source_filepath)
 
         with open(source_filepath, "r") as filehandle:
-            stopping = False
             stopped = False
 
             # Isolate relevant lines and organize by time
@@ -57,11 +56,7 @@ def convert_alog_to_traj():
                         trajs[-1][-1].append(y)
 
                 # Reached endpoint
-                elif "MODE@ACTIVE:STATION-KEEPING" in line:
-                    stopping = True
-
-                # Actually stopped moving
-                elif "NAV_SPEED            uSimMarine      0.0000" in line and stopping and not stopped:
+                elif "MODE@ACTIVE:STATION-KEEPING" in line and not stopped:
                     last_timestep = max(last_timestep, len(trajs[-1]))
                     stopped = True
 
