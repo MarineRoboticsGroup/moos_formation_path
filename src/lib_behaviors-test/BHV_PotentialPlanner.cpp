@@ -38,7 +38,6 @@ BHV_PotentialPlanner::BHV_PotentialPlanner(IvPDomain domain) : IvPBehavior(domai
     headings[force_names[i]] = 0.0;
     weights[force_names[i]] = 0.0;
   }
-
 }
 
 //---------------------------------------------------------------
@@ -181,27 +180,41 @@ IvPFunction *BHV_PotentialPlanner::buildFunctionWithZAIC()
 
   int index = 0;
   bool first_only = true;
+  double total_heading = 0.0;
+  double total_weight = 0.0;
   for (int i = 0; i < headings.size(); i++)
   {
-    if (weights[force_names[i]] > 0.5)
-    {
-      if (!first_only)
-      {
-        index = crs_zaic.addComponent();
-      }
-      postMessage("TEST", "Inside for: " + force_names[i]);
-      postMessage("TEST", "heading: " + to_string(headings[force_names[i]]));
-      double summit = headings[force_names[i]];
-      double peakwidth = 1.0;
-      double basewidth = 180.0;
-      double summitdelta = 0.1;
-      double minutil = 0.0;
-      double maxutil = weights[force_names[i]]; //TODO: Multiply with length of vector?
-      crs_zaic.setParams(summit, peakwidth, basewidth, summitdelta, minutil, maxutil, index);
+    // if (weights[force_names[i]] > 0.5)
+    // {
+    //   if (!first_only)
+    //   {
+    //     index = crs_zaic.addComponent();
+    //   }
+    //   postMessage("TEST", "Inside for: " + force_names[i]);
+    //   postMessage("TEST", "heading: " + to_string(headings[force_names[i]]));
+    //   double summit = headings[force_names[i]];
+    //   double peakwidth = 1.0;
+    //   double basewidth = 180.0;
+    //   double summitdelta = 0.1;
+    //   double minutil = 0.0;
+    //   double maxutil = weights[force_names[i]]; //TODO: Multiply with length of vector?
+    //   crs_zaic.setParams(summit, peakwidth, basewidth, summitdelta, minutil, maxutil, index);
 
-      first_only = false;
-    }
+    //   first_only = false;
+    // }
+    total_heading += headings[force_names[i]] * weights[force_names[i]];
+    total_weight += weights[force_names[i]];
   }
+  total_heading /= total_weight;
+
+  postMessage("TEST", "heading: " + to_string(total_heading));
+  double summit = total_heading;
+  double peakwidth = 1.0;
+  double basewidth = 180.0;
+  double summitdelta = 0.1;
+  double minutil = 0.0;
+  double maxutil = total_weight;
+  crs_zaic.setParams(summit, peakwidth, basewidth, summitdelta, minutil, maxutil, index);
 
   crs_zaic.setValueWrap(true);
   if (crs_zaic.stateOK() == false)

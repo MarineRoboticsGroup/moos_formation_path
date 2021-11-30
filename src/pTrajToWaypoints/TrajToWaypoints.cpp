@@ -104,7 +104,7 @@ bool TrajToWaypoints::Iterate()
     update_pt = "points = " + my_seglist.get_spec();
     Notify("TRAJ_WAYPOINTS", update_pt);
     Notify("CURRENT_WAYPOINT", "(" + to_string(waypoints[current_index][0]) + ", " + to_string(waypoints[current_index][0]) + ")");
-    Notify("CONST_SPD_UPDATES", "speed = 2.5");
+    Notify("CONST_SPD_UPDATES", "speed = 1.0");
 
     no_posts = false;
 
@@ -134,7 +134,7 @@ bool TrajToWaypoints::Iterate()
         my_seglist.add_vertex(waypoints[current_index][0], waypoints[current_index][1]);
         update_pt = "points = " + my_seglist.get_spec();
         Notify("TRAJ_WAYPOINTS", update_pt);
-        Notify("CONST_SPD_UPDATES", "speed = 2.5");
+        Notify("CONST_SPD_UPDATES", "speed = 1.0");
         Notify("CURRENT_WAYPOINT", "(" + to_string(waypoints[current_index][0]) + ", " + to_string(waypoints[current_index][1]) + ")");
         go_to_next = false;
       }

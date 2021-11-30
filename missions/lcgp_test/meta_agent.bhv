@@ -33,7 +33,7 @@ Behavior = BHV_Waypoint
   perpetual = true
   updates   = TRAJ_WAYPOINTS
   point = 150,-125
-  speed  = 2.5
+  speed  = .1
   visual_hints = nextpt_lcolor=invisible, label_color=invisible
 }
 
@@ -83,6 +83,6 @@ Behavior = BHV_Waypoint
   condition = MODE==RETURNING
   endflag   = STATION_KEEP = true
 
-     speed  = 2.5
+     speed  = .1
      points = $(START_POS)
 }

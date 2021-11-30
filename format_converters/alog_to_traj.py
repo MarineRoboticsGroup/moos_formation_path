@@ -1,17 +1,18 @@
 import os
 import glob
 
+
 def split_coord_line(line):
     split_line = line.split(" ")
     split_line = [i for i in split_line if i != ""]
     return split_line[0], split_line[-2]
+
 
 def convert_alog_to_traj():
     # Determine which files to work on
     source_filepaths = []
     for name in glob.glob("../missions/lcgp_test/LOG_AGENT*/*.alog"):
         source_filepaths.append(name)
-
 
     # Setup
     trajs = []
@@ -53,6 +54,8 @@ def convert_alog_to_traj():
 
                     # Once the agent starts moving
                     elif start_pos[2] != y:
+                        if len(trajs[-1]) == 0:
+                            trajs[-1].append(start_pos[:])
                         trajs[-1][-1].append(y)
 
                 # Reached endpoint
@@ -69,10 +72,10 @@ def convert_alog_to_traj():
             x = float(trajs[traj_index][i][1])
             y = float(trajs[traj_index][i][2])
 
-            #change range
+            # change range
             y += 200
 
-            #scale
+            # scale
             factor = 35/200
             x *= factor
             y *= factor

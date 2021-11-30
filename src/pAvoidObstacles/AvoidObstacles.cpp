@@ -153,8 +153,8 @@ bool AvoidObstacles::Iterate()
         dist = .01;
       }
 
-      forces[0] += dx / pow(dist, 2);
-      forces[1] += dy / pow(dist, 2);
+      forces[0] += dx / pow(dist, 3);
+      forces[1] += dy / pow(dist, 3);
     }
 
     forces[0] /= all_obstacles.size();

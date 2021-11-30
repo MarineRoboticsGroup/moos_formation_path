@@ -34,7 +34,7 @@ Behavior = BHV_Waypoint
   perpetual = true
   updates   = TRAJ_WAYPOINTS
   point = 150,-125
-  speed  = 2.5
+  speed  = 0.0
   visual_hints = nextpt_lcolor=invisible, label_color=invisible
 }
 
@@ -45,9 +45,9 @@ Behavior=BHV_PotentialPlanner
   pwt        = 100
   condition = MODE==TRAJECTORY
   waypoint_weight = 10.0
-  avoid_agent_weight = 9.9
-  avoid_obstacle_weight = 9.9
-  eoptimality_weight = 0.0
+  avoid_agent_weight = 1.0
+  avoid_obstacle_weight = 1.0
+  eoptimality_weight = 2.0
 }
 
 Behavior=BHV_ConstantSpeed
@@ -55,7 +55,7 @@ Behavior=BHV_ConstantSpeed
    // General Behavior Parameters
    // ---------------------------
    name         = const_spd
-   pwt          = 100              
+   pwt          = 100
    condition    = MODE==TRAJECTORY
    updates      = CONST_SPD_UPDATES
 
@@ -63,7 +63,7 @@ Behavior=BHV_ConstantSpeed
    // ------------------------------------
             basewidth = 0.2
              duration = no-time-limit
-                speed = 1.0
+                speed = 0.1
    speed_mismatch_var = SPEED_DIFF
             peakwidth = 0
           summitdelta = 0
@@ -116,6 +116,6 @@ Behavior = BHV_Waypoint
   condition = MODE==RETURNING
   endflag   = STATION_KEEP = true
 
-     speed  = 2.5
+     speed  = .1
      points = $(START_POS)
 }
