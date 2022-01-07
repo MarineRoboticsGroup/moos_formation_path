@@ -20,50 +20,42 @@ def convert_alog_to_traj():
     for source_filepath in source_filepaths:
         trajs.append([])
         start_pos = [0.0, 0.0, 0.0]
+        current_x = 0.0
+        current_y = 0.0
+        new_coords = [False, False]
         started = False
-        print(source_filepath)
+        print("Processing:", source_filepath)
 
         with open(source_filepath, "r") as filehandle:
             stopped = False
 
             # Isolate relevant lines and organize by time
             for line in filehandle:
+                # Update coords
                 if "TRUE_X" in line:
-                    time, x = split_coord_line(line)
-
-                    # First value
-                    if start_pos[1] == 0.0:
-                        start_pos[0] = time
-                        start_pos[1] = x
-
-                    # Once the agent starts moving
-                    elif start_pos[1] != x:
-                        # Record once timestep of the initial position
-                        if len(trajs[-1]) == 0:
-                            trajs[-1].append(start_pos[:])
-                        trajs[-1].append([time, x])
-                    else:
-                        start_pos[0] = time
+                    time, current_x = split_coord_line(line)
+                    new_coords[0] = True
 
                 elif "TRUE_Y" in line:
-                    time, y = split_coord_line(line)
-
-                    # First value
-                    if start_pos[2] == 0.0:
-                        start_pos[2] = y
-
-                    # Once the agent starts moving
-                    elif start_pos[2] != y:
-                        if len(trajs[-1]) == 0:
-                            trajs[-1].append(start_pos[:])
-                        trajs[-1][-1].append(y)
+                    time, current_y = split_coord_line(line)
+                    new_coords[1] = True
 
                 # Reached endpoint
                 elif "MODE@ACTIVE:STATION-KEEPING" in line and not stopped:
                     last_timestep = max(last_timestep, len(trajs[-1]))
                     stopped = True
 
+                # Handle new x & y
+                if all(new_coords):
+                    new_coords = [False, False]
 
+                    # First value
+                    if len(trajs[-1]) == 0:
+                            trajs[-1].append([time, current_x, current_y])
+
+                    # Once the agent starts moving
+                    elif start_pos[1] != current_x or start_pos[2] != current_y:
+                        trajs[-1].append([time, current_x, current_y])
 
     # Formatting Cleanup
     for traj_index in range(len(trajs)):

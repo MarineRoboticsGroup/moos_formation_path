@@ -32,3 +32,10 @@ Post Processing:
     TODO - figure out what's needed & implement
     TODO - make python script that gets (x,y) postions from alog file and trims the beginning
          - As part of this, make sure the output is the expected input for the existing analysis tools
+
+Feedback:
+    Plot E Optimality Metric over time
+    Reduce turning radius
+    Reduce momentum
+    Reduce to 4 agents
+    Change environment?

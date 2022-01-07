@@ -71,9 +71,9 @@ ProcessConfig = pMarineViewer
   CommsTick  = 4
 
   tiff_file            = forrest19.tif
-  set_pan_x            = -90
-  set_pan_y            = -280
-  zoom                 = 0.55
+  set_pan_x            = 0
+  set_pan_y            = 0
+  zoom                 = .55
   vehicles_shape_scale = 1.5
   vehicles_name_mode   = names+shortmode
 

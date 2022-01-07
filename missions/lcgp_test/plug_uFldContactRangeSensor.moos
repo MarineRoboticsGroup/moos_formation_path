@@ -21,7 +21,8 @@ ProcessConfig = uFldContactRangeSensor
   // echo_color    = chartreuse
 
   // Configuring Artificial Noise
-  // rn_algorithm   = gaussian,sigma=10
+  rn_algorithm      = gaussian, a
+  rn_gaussian_sigma = 3
 
   // Configuring Probability Detection with Exponential Decay
   // exponential_decay = false

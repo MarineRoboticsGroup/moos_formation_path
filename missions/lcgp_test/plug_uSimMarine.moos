@@ -6,4 +6,6 @@ ProcessConfig = uSimMarine
 
   START_POS = $(START_POS)
   PREFIX    = NAV
+  turn_rate = 100
+
 }
