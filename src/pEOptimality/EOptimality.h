@@ -37,6 +37,7 @@ class EOptimality : public AppCastingMOOSApp
 private: // Configuration variables
   string self_name;
   int num_agents;
+  int num_anchors = 3;
 
 private: // State variables
   vector<double> self_pos;

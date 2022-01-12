@@ -33,6 +33,7 @@ class Localize : public AppCastingMOOSApp
     string self_name;
     int self_id;
     int num_agents;
+    int num_anchors = 3;
 
   private: // State variables
     vector<double> self_est_pos;

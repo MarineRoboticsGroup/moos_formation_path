@@ -32,6 +32,7 @@ protected: // Local Utility functions
 
 protected: // Configuration parameters
   vector<string> force_names;
+  string self_name;
 
 protected: // State variables
   map<string, vector<double>> forces;

@@ -31,7 +31,7 @@ class CommsMgr : public AppCastingMOOSApp
     void registerVariables();
 
   private: // Configuration variables
-    int max_bits_per_min; //TODO: Incorporate
+    int max_bits_per_min;
     int num_agents;
     string self_name;
 

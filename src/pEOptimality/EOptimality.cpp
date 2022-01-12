@@ -127,7 +127,8 @@ bool EOptimality::Iterate()
 
     int self_id = stoi(self_name.substr(5));
     // Notify("TEST", to_string(self_id) + self_name);
-    if (self_id <= num_agents - 3)
+    // don't apply to anchors
+    if (self_id <= num_agents - num_anchors)
     {
       Notify("EOPTIMALITY_FORCE", "(" + to_string(grad[2*self_id]) + ", " + to_string(grad[2*self_id + 1]) + ")");
     }
@@ -236,7 +237,7 @@ bool EOptimality::buildReport()
 
 vector<vector<double>> EOptimality::buildFischerMatrix()
 {
-  int num_var_agents = num_agents - 3;
+  int num_var_agents = num_agents - num_anchors;
   vector<vector<double>> K(num_var_agents * 2, vector<double>(num_var_agents * 2, 0.0));
 
   for (int i = 0; i < num_agents; i++)
@@ -267,8 +268,8 @@ vector<vector<double>> EOptimality::buildFischerMatrix()
       double delXY = diff_x * diff_y / denom;
 
       // TODO: rename new_i to i and new_j to j
-      int new_i = i - 3;
-      int new_j = j - 3;
+      int new_i = i - num_anchors;
+      int new_j = j - num_anchors;
 
       // Blocks
       if (0 <= new_i)
@@ -401,7 +402,7 @@ vector<vector<double>> EOptimality::getPartialDerivOfMatrix(int index)
   string name_i = "agent" + to_string(i + 1);
   vector<double> node_i = all_est_poses[name_i];
 
-  for (int j = 0; j < num_agents - 3; j++)
+  for (int j = 0; j < num_agents - num_anchors; j++)
   {
     if (i == j)
     {

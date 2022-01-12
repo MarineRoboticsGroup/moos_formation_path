@@ -23,6 +23,7 @@ GenObstacle::GenObstacle()
   // boundaries
   int_min_x = 0;
   int_max_x = 200;
+
   int_min_y = -200;
   int_max_y = 0;
 }

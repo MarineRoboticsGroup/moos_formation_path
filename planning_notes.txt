@@ -39,3 +39,47 @@ Feedback:
     Reduce momentum
     Reduce to 4 agents
     Change environment?
+
+Old trajs:
+
+            # draft 1
+            # rect, 10_0_0_0
+            # all_timestamps = ["traj_29112021135733", "traj_29112021135935", "traj_29112021140120", "traj_29112021135834", "traj_29112021140030"]
+            # rect, 10_1_1_0
+            # all_timestamps = ["traj_29112021141840", "traj_29112021142649", "traj_29112021143002", "traj_29112021142011", "traj_29112021142825"]
+            # rect, 10_1_1_2
+            # all_timestamps = ["traj_29112021143154", "traj_29112021143559", "traj_29112021144107", "traj_29112021143407", "traj_29112021143803"]
+
+            # curve, 10_0_0_0
+            # all_timestamps = ["traj_30112021173825", "traj_30112021180453", "traj_30112021180758", "traj_30112021175853", "traj_30112021180644"]
+            # curve, 10_1_1_0
+            # all_timestamps = ["traj_30112021181056", "traj_30112021182420", "traj_30112021182729", "traj_30112021181256", "traj_30112021182554"]
+            # curve, 10_1_1_2
+            # all_timestamps = ["traj_30112021182928", "traj_30112021183654", "traj_30112021183431", "traj_30112021184111", "traj_30112021183909"]
+
+            # draft 2
+            # rect, 10_0_0_0
+            # all_timestamps = ["traj_30122021162719", "traj_30122021162907", "traj_30122021163050", "traj_30122021162823", "traj_30122021163003"]
+            # rect, 10_0_0_2
+            # all_timestamps = ["traj_30122021163258", "traj_30122021163527", "traj_30122021164029", "traj_30122021163417", "traj_30122021163643"]
+            # # curve, 10_0_0_0
+            # all_timestamps = ["traj_29122021190129", "traj_29122021190719", "traj_29122021191001", "traj_29122021190505", "traj_29122021190853"]
+            # # curve, 10_0_0_2
+            # all_timestamps = ["traj_29122021191312", "traj_29122021191520", "traj_30122021162212", "traj_29122021191415", "traj_30122021162049"]
+
+            # Simple scenario (sigma=3, no anchor noise)
+            # all_timestamps = ["traj_612022200257", "traj_612022200345", "traj_612022200430"]
+            # all_timestamps = ["traj_612022200529", "traj_612022200625", "traj_612022200714"]
+
+            # Line (sigma=3, no anchor noise)
+            # all_timestamps = ["traj_512022234301", "traj_512022234353", "traj_512022234435"]
+            # all_timestamps = ["traj_512022234554", "traj_512022234752", "traj_512022234841"]
+
+            # Simple scenario (sigma=3, anchor noise)
+            # all_timestamps = ["traj_912022000508", "traj_912022000548", "traj_912022000802"]
+            # all_timestamps = ["traj_912022001245", "traj_912022001335", "traj_912022001427"]
+
+            # Line (sigma=3, anchor noise)
+            # all_timestamps = ["traj_912022000957", "traj_912022001042", "traj_912022001125"]
+            # all_timestamps = ["traj_912022001739", "traj_912022001827", "traj_912022001927"]
+            # all_timestamps = ["traj_912022000508", "traj_912022001245", "traj_912022000957", "traj_912022001739"]

@@ -7,6 +7,7 @@
 #include <iterator>
 #include <math.h>
 #include <chrono>
+#include <random>
 #include "MBUtils.h"
 #include "ACTable.h"
 #include "Localize.h"
@@ -118,8 +119,8 @@ bool Localize::Iterate()
   double delta_time = stod(str_ms)/1000 - last_iteration;
   last_iteration = stod(str_ms)/1000;
 
-  // Only update non-anchors, euqation adapted from Zelazo 2015
-  if (self_id <= num_agents - 3 && neighbor_ranges.size() == num_agents - 1 && all_est_poses.size() == num_agents - 1)
+  // Only update non-anchors, equation adapted from Zelazo 2015
+  if (self_id <= num_agents - num_anchors && neighbor_ranges.size() == num_agents - 1 && all_est_poses.size() == num_agents - 1)
   {
     vector<double> delta_pos = {0.0, 0.0};
     for (const auto &pair : all_est_poses)
@@ -139,10 +140,18 @@ bool Localize::Iterate()
     self_est_pos[0] += delta_pos[0] * delta_time;
     self_est_pos[1] += delta_pos[1] * delta_time;
   }
-  // Use accurate pos for anchors
-  else if (self_id > num_agents - 3 && self_gnd_pos.size() == 3)
+  // Use accurate pos + noise for anchors
+  else if (self_id > num_agents - num_anchors && self_gnd_pos.size() == 3)
   {
-    self_est_pos = self_gnd_pos;
+    // Noisy pos
+    default_random_engine generator;
+    normal_distribution<double> distribution(0.0,3.0);
+    double x_noise = distribution(generator);
+    double y_noise = distribution(generator);
+    self_est_pos = {self_gnd_pos[0]+x_noise, self_gnd_pos[1]+y_noise, self_gnd_pos[2]};
+
+    // Perfect pos
+    // self_est_pos = {self_gnd_pos[0], self_gnd_pos[1], self_gnd_pos[2]};
   }
 
   string self_est_pos_report = "NAME=" + self_name +

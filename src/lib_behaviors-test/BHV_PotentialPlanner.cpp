@@ -48,30 +48,37 @@ bool BHV_PotentialPlanner::setParam(string param, string val)
   // Convert the parameter to lower case for more general matching
   param = tolower(param);
 
-  // convert value to double
-  double double_val = atof(val.c_str());
+  if (param == "self_name")
+  {
+    self_name = val;
+    return (true);
+  }
+  else
+  {
+    // convert value to double
+    double double_val = atof(val.c_str());
 
-  if (param == "waypoint_weight")
-  {
-    weights["WAYPOINT_FORCE"] = double_val;
-    return (true);
+    if (param == "waypoint_weight")
+    {
+      weights["WAYPOINT_FORCE"] = double_val;
+      return (true);
+    }
+    else if (param == "avoid_agent_weight")
+    {
+      weights["AGENT_FORCE"] = double_val;
+      return (true);
+    }
+    else if (param == "avoid_obstacle_weight")
+    {
+      weights["OBSTACLE_FORCE"] = double_val;
+      return (true);
+    }
+    else if (param == "eoptimality_weight")
+    {
+      weights["EOPTIMALITY_FORCE"] = double_val;
+      return (true);
+    }
   }
-  else if (param == "avoid_agent_weight")
-  {
-    weights["AGENT_FORCE"] = double_val;
-    return (true);
-  }
-  else if (param == "avoid_obstacle_weight")
-  {
-    weights["OBSTACLE_FORCE"] = double_val;
-    return (true);
-  }
-  else if (param == "eoptimality_weight")
-  {
-    weights["EOPTIMALITY_FORCE"] = double_val;
-    return (true);
-  }
-
   // If not handled above, then just return false;
   return (false);
 }
@@ -202,8 +209,15 @@ IvPFunction *BHV_PotentialPlanner::buildFunctionWithZAIC()
 
     //   first_only = false;
     // }
-    total_heading += headings[force_names[i]] * weights[force_names[i]];
-    total_weight += weights[force_names[i]];
+
+    // Prevent anchors from including the E Opt force
+    // Num agents - num anchors
+    int self_id = stoi(self_name.substr(5));
+    if (self_id <= 6 - 3 || force_names[i] != "EOPTIMALITY_FORCE")
+    {
+      total_heading += headings[force_names[i]] * weights[force_names[i]];
+      total_weight += weights[force_names[i]];
+    }
   }
   total_heading /= total_weight;
 
