@@ -144,14 +144,14 @@ bool Localize::Iterate()
   else if (self_id > num_agents - num_anchors && self_gnd_pos.size() == 3)
   {
     // Noisy pos
-    default_random_engine generator;
-    normal_distribution<double> distribution(0.0,3.0);
-    double x_noise = distribution(generator);
-    double y_noise = distribution(generator);
-    self_est_pos = {self_gnd_pos[0]+x_noise, self_gnd_pos[1]+y_noise, self_gnd_pos[2]};
+    // default_random_engine generator;
+    // normal_distribution<double> distribution(0.0,3.0);
+    // double x_noise = distribution(generator);
+    // double y_noise = distribution(generator);
+    // self_est_pos = {self_gnd_pos[0]+x_noise, self_gnd_pos[1]+y_noise, self_gnd_pos[2]};
 
     // Perfect pos
-    // self_est_pos = {self_gnd_pos[0], self_gnd_pos[1], self_gnd_pos[2]};
+    self_est_pos = {self_gnd_pos[0], self_gnd_pos[1], self_gnd_pos[2]};
   }
 
   string self_est_pos_report = "NAME=" + self_name +

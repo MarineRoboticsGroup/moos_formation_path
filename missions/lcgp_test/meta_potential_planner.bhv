@@ -46,8 +46,8 @@ Behavior=BHV_PotentialPlanner
   condition  = MODE==TRAJECTORY
   self_name  = $(OVNAME)
   waypoint_weight = 10.0
-  avoid_agent_weight = 1.0
-  avoid_obstacle_weight = 1.0
+  avoid_agent_weight = 0.0
+  avoid_obstacle_weight = 0.0
   eoptimality_weight = 2.0
 }
 

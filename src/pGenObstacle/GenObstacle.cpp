@@ -118,7 +118,7 @@ bool GenObstacle::Iterate()
         viz_msg += ",active=true,label=" + name + to_string(+msgs.size() * i + msg_idx) + ",msg=" + name;
         viz_msg += ",type=obstacle,label_color=invisible,vertex_color=yellow,vertex_size=2";
 
-        Notify("VIEW_POINT", viz_msg);
+        // Notify("VIEW_POINT", viz_msg);
       }
     }
 
